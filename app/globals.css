@@ -1,26 +1,134 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@custom-variant dark (&:where(.dark, .dark *));
 
+
+/* ==========================================
+ * 1. TAILWIND V4 THEME DEFINITION
+ * ========================================== */
+@theme {
+    /* Surface Tokens */
+    --color-surface-base: var(--surface-base);
+    --color-surface-card: var(--surface-card);
+    --color-surface-sub: var(--surface-sub);
+    --color-surface-subest: var(--surface-subest);
+
+    /* Border Tokens */
+    --color-border-default: var(--border-default);
+    --color-border-hover: var(--border-hover);
+
+    /* Fill & Overlay Tokens */
+    --color-fill-secondary: var(--fill-secondary);
+    --color-fill-pressed: var(--fill-pressed);
+
+    /* Typography Tokens */
+    --color-text-primary: var(--text-primary);
+    --color-text-secondary: var(--text-secondary);
+    --color-text-muted: var(--text-muted);
+
+    /* Primary Accent Tokens (Blue) */
+    --color-primary-base: var(--primary-base);
+    --color-primary-hover: var(--primary-hover);
+    --color-primary-active: var(--primary-active);
+    --color-primary-soft: var(--primary-soft);
+    --color-primary-ring: var(--primary-ring);
+    --color-on-primary: var(--on-primary);
+}
+
+/* ==========================================
+ * 2. LIGHT MODE CSS VARIABLES
+ * ========================================== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+    /* Surfaces (Solid) */
+    --surface-base: #f8fafc; /* slate-50 */
+    --surface-card: #ffffff; /* pure white */
+    --surface-sub: #f1f5f9; /* slate-100 */
+    --surface-subest: #e2e8f0; /* slate-200 */
+
+    /* Neutral Overlays (Alpha - slate-900 기반) */
+    --border-default: rgba(15, 23, 42, 0.08);
+    --border-hover: rgba(15, 23, 42, 0.16);
+
+    --fill-secondary: rgba(15, 23, 42, 0.05);
+    --fill-pressed: rgba(15, 23, 42, 0.1);
+
+    /* Typography */
+    --text-primary: #0f172a;
+    --text-secondary: rgba(15, 23, 42, 0.65);
+    --text-muted: rgba(15, 23, 42, 0.4);
+
+    /* Primary Accent (Blue) */
+    --primary-base: #2563eb; /* blue-600 */
+    --primary-hover: #1d4ed8; /* blue-700 */
+    --primary-active: #1e40af; /* blue-800 */
+    --on-primary: #ffffff;
+
+    --primary-soft: rgba(37, 99, 235, 0.1);
+    --primary-ring: rgba(37, 99, 235, 0.25);
+    @import "highlight.js/styles/github.css";
+    .prose pre {
+        background-color: var(--surface-subest);
+        border-color: var(--border-default);
+        border-width: 1px;
+        color: var(--text-primary)
+    }
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ==========================================
+ * 3. DARK MODE CSS VARIABLES
+ * ========================================== */
+.dark {
+    /* Surfaces (Solid - 위로 떠오를수록 밝아짐) */
+    --surface-base: #090d16;
+    --surface-card: #0f172a; /* slate-900 */
+    --surface-sub: #1e293b; /* slate-800 */
+    --surface-subest: #334155; /* slate-700 */
+
+    /* Neutral Overlays (Alpha - white 기반) */
+    --border-default: rgba(255, 255, 255, 0.1);
+    --border-hover: rgba(255, 255, 255, 0.2);
+
+    --fill-secondary: rgba(255, 255, 255, 0.06);
+    --fill-pressed: rgba(255, 255, 255, 0.12);
+
+    /* Typography */
+    --text-primary: #f8fafc; /* slate-50 */
+    --text-secondary: rgba(248, 250, 252, 0.65);
+    --text-muted: rgba(248, 250, 252, 0.4);
+
+    /* Primary Accent (Blue-500) */
+    --primary-base: #3b82f6; /* blue-500 */
+    --primary-hover: #60a5fa; /* blue-400 */
+    --primary-active: #2563eb; /* blue-600 */
+    --on-primary: #ffffff;
+
+    --primary-soft: rgba(59, 130, 246, 0.15);
+    --primary-ring: rgba(59, 130, 246, 0.4);
+    @import "highlight.js/styles/github-dark.css";
+    .prose pre {
+        background-color: var(--surface-subest);
+        border-color: var(--border-default);
+        border-width: 1px;
+        color: var(--text-primary)
+    }
+}
+@layer base {
+    * {
+        box-sizing: border-box;
+        transition-property: background-color, color;
+        transition-duration: 0.3s;
+        transition-timing-function: ease-in-out;
+    }
+    html {
+      scroll-behavior: smooth;
+      color: var(--text-primary);
+    }
+
+    .prose h2, .prose h3 {
+      scroll-margin-top: 64px;
+    }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.mink-editor, .mink-editor * {
+  transition: none !important;
 }
