@@ -22,8 +22,8 @@ export default async function BlogCategory({ params }: Props) {
   return (
     <div className="max-w-7xl w-full flex flex-col gap-4 py-4 xl:py-16">
       <div className="flex flex-row gap-4 px-4 items-baseline">
-        <h1 className="text-4xl font-semibold">{category.name}</h1>
-        <span className="text-sm text-text-secondary">
+        <h1 className="text-h1 font-semibold">{category.name}</h1>
+        <span className="text-sub text-text-secondary">
           게시글 {posts.length}개
         </span>
       </div>

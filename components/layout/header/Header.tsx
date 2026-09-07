@@ -15,7 +15,7 @@ export default function Header() {
         <ToggleSidebar />
         <Link href="/" onClick={()=>setIsOpen(false)} className="flex flex-row items-center gap-2">
           <Logo size="24px" />
-          <span className="font-black text-2xl">MINK-STUD.IO</span>
+          <span className="font-black text-h2">MINK-STUD.IO</span>
         </Link>
       </div>
       <ThemeSelector/>

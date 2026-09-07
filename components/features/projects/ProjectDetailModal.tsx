@@ -42,13 +42,11 @@ export default function ProjectDetailModal({
       />
 
       {/* Modal Container */}
-      <div className="relative w-full max-w-5xl max-h-[95vh] bg-surface-base border border-border-default rounded-3xl shadow-2xl overflow-y-auto z-15 flex flex-col transition-all">
+      <div className="relative w-full max-w-5xl max-h-[95vh] bg-surface-base border border-border-default rounded-xl shadow-2xl overflow-y-auto z-15 flex flex-col transition-all">
         {/* Header Bar */}
         <div className="sticky top-0 z-16 flex items-center justify-between px-4 py-4 bg-surface-sub border-b border-border-default">
           <div className="flex items-center gap-2">
-              <span
-                className="text-sm font-medium"
-              >
+              <span className="text-base font-medium">
                 {project.domain}
               </span>
             <span className="text-xs text-text-secondary">• {project.period}</span>
@@ -65,43 +63,22 @@ export default function ProjectDetailModal({
         </div>
 
         {/* Modal Content Area */}
-        <div className="p-4 xl:p-8 space-y-6">
+        <div className="">
           {/* Title & Summary */}
           <div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-gray-100">
+            <h2 className="text-h2 font-bold">
               {project.title}
             </h2>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-2">
+            <p className="text-sub text-text-secondary mt-2">
               {project.summary}
             </p>
           </div>
 
-          {/* Project Media Preview (Video / Poster) */}
-          {project.videoUrl ? (
-            <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-black border border-gray-200 dark:border-gray-800">
-              <iframe
-                src={project.videoUrl}
-                className="w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-          ) : project.posterUrl ? (
-            <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-800">
-              <img
-                src={project.posterUrl}
-                alt={project.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ) : null}
 
           {/* Detailed Description */}
-          <div className="space-y-2">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400">
-              Overview
-            </h3>
-            <p className="text-sm leading-relaxed text-gray-700 dark:text-gray-300 whitespace-pre-line">
+          <div className="">
+            <span className="w-full h-px border border-border-default"/>
+            <p className="text-base">
               {project.description}
             </p>
           </div>
@@ -117,6 +94,28 @@ export default function ProjectDetailModal({
               </p>
             </div>
           )}
+
+          {/* Project Media Preview (Video / Poster) */}
+          {project.videoUrl && (
+            <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-black border border-gray-200 dark:border-gray-800">
+              <iframe
+                src={project.videoUrl}
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          )}
+          {project.posterUrl && (
+            <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-800">
+              <img
+                src={project.posterUrl}
+                alt={project.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+
 
           {/* Applied Stacks */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">

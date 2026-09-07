@@ -13,13 +13,13 @@ export default function PostItem({ post }: { post: PostSummary }) {
       <span className="w-full h-px bg-border-default" />
       <div className="w-full h-24 xl:h-32 flex flex-row items-center gap-2 xl:gap-4 py-2 xl:py-4">
         <div className="w-full h-full flex flex-col justify-between">
-          <h2 className="truncate text-xl font-bold text-text-primary group-hover:text-primary-base">
+          <h2 className="truncate text-h2 text-text-primary group-hover:text-primary-base">
             {post.title}
           </h2>
-          <p className="line-clamp-1 xl:line-clamp-2 text-sm leading-relaxed text-text-secondary">
+          <p className="line-clamp-1 xl:line-clamp-2 text-base text-text-secondary">
             {post.summary}
           </p>
-          <div className="flex items-center gap-2 text-xs text-text-secondary">
+          <div className="flex items-center gap-2 text-sub text-text-secondary">
             <span className="font-semibold text-text-primary">
               {post.category.name}
             </span>

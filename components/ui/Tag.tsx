@@ -34,7 +34,7 @@ export default function Tag({
 
   return (
     <span
-      className={`w-fit inline-flex items-center text-xs px-1.5 py-0.5 rounded-md border ${colorClass} ${className}`}
+      className={`w-fit inline-flex items-center text-subest px-1.5 py-0.5 rounded-md border ${colorClass} ${className}`}
     >
       {children}
     </span>

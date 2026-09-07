@@ -28,25 +28,25 @@ export default function ProjectCard({ project, onClick }: ProjectCardProps) {
 
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="text-sm font-medium">
+              <span className="text-sub">
                 {project.domain}
               </span>
               {project.isFeatured && (
-                <span className="text-sm text-amber-300">
+                <span className="text-sub text-amber-300">
                   ★
                 </span>
               )}
             </div>
 
-            <span className="text-xs text-text-secondary">
+            <span className="text-sub text-text-secondary">
               {project.period}
             </span>
           </div>
 
-          <h3 className="text-xl font-semibold group-hover:text-primary-base">
+          <h3 className="text-h3 group-hover:text-primary-base">
             {project.title}
           </h3>
-          <p className="text-sm text-text-secondary line-clamp-2 leading-relaxed">
+          <p className="text-sub text-text-secondary line-clamp-2">
             {project.summary}
           </p>
 

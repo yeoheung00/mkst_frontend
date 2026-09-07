@@ -33,6 +33,38 @@
     --color-primary-soft: var(--primary-soft);
     --color-primary-ring: var(--primary-ring);
     --color-on-primary: var(--on-primary);
+
+
+
+    /* H1: 메인 페이지 타이틀, Hero 섹션 */
+      --text-h1: 2rem; /* 32px */
+      --text-h1--line-height: 1.25;
+      --text-h1--font-weight: 700;
+
+      /* H2: 섹션 타이틀, 모달 메인 제목 */
+      --text-h2: 1.5rem; /* 24px */
+      --text-h2--line-height: 1.33;
+      --text-h2--font-weight: 600;
+
+      /* H3: 프로젝트 카드 제목, Sub-section */
+      --text-h3: 1.25rem; /* 20px */
+      --text-h3--line-height: 1.4;
+      --text-h3--font-weight: 600; /* 500 -> 600으로 상향 추천 */
+
+      /* Base: 본문, 설명글, 포스트 내용 */
+      --text-base: 1rem; /* 16px */
+      --text-base--line-height: 1.6;
+      --text-base--font-weight: 400;
+
+      /* Sub: 서브 텍스트, 태그, 버튼 텍스트 */
+      --text-sub: 0.75rem; /* 12px */
+      --text-sub--line-height: 1.5;
+      --text-sub--font-weight: 500; /* 300 -> 500으로 상향 (가독성 보장) */
+
+      /* Subest: 타임스탬프, 초소형 메타데이터 */
+      --text-subest: 0.625rem; /* 10px */
+      --text-subest--line-height: 1.4;
+      --text-subest--font-weight: 500; /* 300 -> 500으로 상향 (가독성 보장) */
 }
 
 /* ==========================================

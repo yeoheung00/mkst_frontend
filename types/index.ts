@@ -13,3 +13,4 @@ export type ApiErrorResponse = {
 export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
 
 export * from './blog';
+export * from './project'
