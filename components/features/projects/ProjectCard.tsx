@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/Button";
+import { LinkButton } from "@/components/ui/LinkButton";
 import Tag from "@/components/ui/Tag";
 import { Project } from "@/types/project";
 
@@ -23,7 +24,7 @@ export default function ProjectCard({ project, onClick }: ProjectCardProps) {
       }}
       className="group relative flex flex-col justify-between gap-4 p-4 rounded-xl border border-border-default bg-surface-card cursor-pointer"
     >
-      <div className="flex flex-col justify-between gap-4">
+      <div className="flex flex-col justify-between gap-4 flex-1">
         <div className="flex flex-col gap-2">
 
           <div className="flex items-center justify-between gap-2">
@@ -78,11 +79,11 @@ export default function ProjectCard({ project, onClick }: ProjectCardProps) {
       </div>
 
       <div className="w-full flex gap-4 items-center">
-        {project.githubUrl && (
-          <Button variant="secondary" size="sm" className="flex-1">Github Repo</Button>
-        )}
         {project.demoUrl && (
-          <Button variant="primary" size="sm" className="flex-1">Visit Demo</Button>
+          <LinkButton href={project.demoUrl} target="_blank" variant="primary" size="sm" className="flex-1">Live Demo ↗</LinkButton>
+        )}
+        {project.githubUrl && (
+          <LinkButton href={project.githubUrl} target="_blank" variant="secondary" size="sm" className="flex-1">Github Repo ↗</LinkButton>
         )}
       </div>
     </div>

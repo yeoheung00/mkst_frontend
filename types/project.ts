@@ -16,7 +16,11 @@ export interface Project {
   devStack: string[];     // 엔지니어링 기술 스택 (Next.js, Express, Docker 등)
   visualStack: string[];  // 시각 디자인 스택 (Procreate, After Effects 등)
 
-  posterUrl?: string;
+  poster?: {
+    src: string;
+    width: number;
+    height: number;
+  };
   videoUrl?: string;
   demoUrl?: string;
   githubUrl?: string;

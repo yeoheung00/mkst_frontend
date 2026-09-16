@@ -13,7 +13,7 @@ export function Signout({ size = "24px", className = "" }: IconProps) {
       strokeWidth="2px"
       className={className}
     >
-      <path d="M8,20h-2c-1.1,0-2-.9-2-2V6c0-1.1.9-2,2-2h2M8,12h12M16,8l4,4-4,4"/>
+      <path d="M9,21h-4c-1.1,0-2-1.01-2-2.25V5.25c0-1.24.9-2.25,2-2.25h4M7,12h14M17,8l4,4-4,4"/>
     </svg>
   )
 }

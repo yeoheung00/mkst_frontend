@@ -1,97 +1,132 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { Project } from "@/types/project";
-import { X } from "@/components/icons";
+import { ArrowLeft, X } from "@/components/icons";
 import { Button } from "@/components/ui/Button";
+import Image from "next/image";
+import Tag from "@/components/ui/Tag";
+import { LinkButton } from "@/components/ui/LinkButton";
 
 interface ProjectDetailModalProps {
   project: Project | null;
+  isOpen: boolean;
   onClose: () => void;
 }
 
 export default function ProjectDetailModal({
   project,
+  isOpen,
   onClose,
 }: ProjectDetailModalProps) {
   // ESC 키 눌렀을 때 모달 닫기 & 스크롤 방지
+  const isPoppedRef = useRef(false);
+
+  const handleClose = useCallback(() => {
+    // 사용자가 뒤로가기 제스처/버튼으로 닫은 게 아니고, 가상 히스토리가 남아있다면 1단계 수동 원복
+    if (!isPoppedRef.current && window.history.state?.modalOpen) {
+      window.history.back();
+    }
+    onClose();
+  }, [onClose]);
+
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+    // 모달이 닫혀있거나 프로젝트가 없으면 아무 작업도 하지 않고 리턴 (pushState 절대 안 함)
+    if (!isOpen || !project) return;
+
+    // 1. 모달이 열릴 때 초기화 및 스크롤 고정
+    isPoppedRef.current = false;
+    document.body.style.overflow = "hidden";
+
+    // 2. 가상 히스토리 스택 추가
+    window.history.pushState({ modalOpen: true }, "", window.location.href);
+
+    // 3. 브라우저/모바일 뒤로가기 이벤트 감지
+    const handlePopState = () => {
+      isPoppedRef.current = true; // 뒤로가기로 닫혔음을 기록
+      onClose();
     };
 
-    if (project) {
-      document.body.style.overflow = "hidden";
-      window.addEventListener("keydown", handleKeyDown);
-    }
+    // 4. ESC 키 감지
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleClose();
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
       document.body.style.overflow = "unset";
+      window.removeEventListener("popstate", handlePopState);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [project, onClose]);
+  }, [isOpen, project, onClose, handleClose]);
 
   if (!project) return null;
 
   return (
-    <div className="fixed inset-0 z-30 flex items-center justify-center p-4 sm:p-6 md:p-10">
+    <div className="fixed left-0 bottom-0 w-full h-[calc(100vh-64px)] md:h-full z-30 flex items-center justify-center md:p-8">
       {/* Background Backdrop (클릭 시 닫힘) */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
-        onClick={onClose}
+        className="fixed w-full h-[calc(100vh-64px)] md:h-full bg-black/60 backdrop-blur-sm transition-opacity"
+        onClick={handleClose}
       />
+      <div className="absolute -top-12 left-4 bg-surface-sub z-50">
+        <Button
+          variant="ghost"
+          onClick={handleClose}
+          className=" block md:hidden w-8 h-8 rounded-md"
+        >
+          <ArrowLeft />
+        </Button>
+      </div>
 
-      {/* Modal Container */}
-      <div className="relative w-full max-w-5xl max-h-[95vh] bg-surface-base border border-border-default rounded-xl shadow-2xl overflow-y-auto z-15 flex flex-col transition-all">
+      {/* Modal Content */}
+      <div className="relative w-full max-w-3xl h-[calc(100vh-64px)] md:h-fit md:max-h-[95%] bg-surface-base md:border border-border-default md:rounded-xl overflow-y-auto flex flex-col">
         {/* Header Bar */}
-        <div className="sticky top-0 z-16 flex items-center justify-between px-4 py-4 bg-surface-sub border-b border-border-default">
+        <div className="hidden md:flex h-16 sticky top-0 z-16 items-center justify-between p-4 bg-surface-sub border-b border-border-default">
           <div className="flex items-center gap-2">
-              <span className="text-base font-medium">
-                {project.domain}
-              </span>
-            <span className="text-xs text-text-secondary">• {project.period}</span>
+            <span className="text-base font-medium">{project.domain}</span>
+            <span className="text-sub text-text-secondary">
+              • {project.period}
+            </span>
           </div>
 
           {/* Close Button */}
           <Button
             variant="ghost"
-            onClick={onClose}
+            onClick={handleClose}
             className="w-8 h-8 rounded-md"
           >
-            <X/>
+            <X />
           </Button>
         </div>
 
-        {/* Modal Content Area */}
-        <div className="">
+        <div className="p-4 h-full relative flex flex-col gap-4">
           {/* Title & Summary */}
-          <div>
-            <h2 className="text-h2 font-bold">
-              {project.title}
-            </h2>
-            <p className="text-sub text-text-secondary mt-2">
-              {project.summary}
-            </p>
+          <div className="flex flex-col gap-1">
+            <h1 className="text-h1 font-bold">{project.title}</h1>
+            <div className="md:hidden flex items-center gap-2">
+              <span className="text-base font-medium">{project.domain}</span>
+              <span className="text-sub text-text-secondary">
+                • {project.period}
+              </span>
+            </div>
           </div>
+
+          <span className="bg-border-default h-px w-full"/>
 
 
           {/* Detailed Description */}
-          <div className="">
-            <span className="w-full h-px border border-border-default"/>
-            <p className="text-base">
-              {project.description}
-            </p>
-          </div>
+          <p className="text-base">{project.description}</p>
 
           {/* Key Engineering / Visual Challenge */}
           {project.keyChallenge && (
-            <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-900/50 space-y-1">
-              <h4 className="text-xs font-bold text-amber-800 dark:text-amber-400 flex items-center gap-1.5">
-                💡 Key Challenge & Solution
-              </h4>
-              <p className="text-xs text-amber-900/80 dark:text-amber-300/90 leading-relaxed">
-                {project.keyChallenge}
-              </p>
+            <div className="pl-2 rounded-sm border-l-4 border-primary-base">
+              <h2 className="text-h2">핵심 과제</h2>
+              <p className="text-base">{project.keyChallenge}</p>
             </div>
           )}
 
@@ -106,33 +141,31 @@ export default function ProjectDetailModal({
               />
             </div>
           )}
-          {project.posterUrl && (
+          {project.poster && (
             <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-800">
-              <img
-                src={project.posterUrl}
+              <Image
+                src={project.poster.src}
                 alt={project.title}
+                width={project.poster.width}
+                height={project.poster.height}
                 className="w-full h-full object-cover"
               />
             </div>
           )}
 
-
           {/* Applied Stacks */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
             {project.devStack && project.devStack.length > 0 && (
               <div className="space-y-2">
-                <h4 className="text-xs font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                  Development Stack
-                </h4>
+                <h3 className="text-h3 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-text-primary" />
+                  Development Skills
+                </h3>
                 <div className="flex flex-wrap gap-1.5">
-                  {project.devStack.map((tech) => (
-                    <span
-                      key={tech}
-                      className="px-2.5 py-1 text-xs rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-medium"
-                    >
-                      {tech}
-                    </span>
+                  {project.devStack.map((item) => (
+                    <Tag key={item} size="md" color="blue">
+                      {item}
+                    </Tag>
                   ))}
                 </div>
               </div>
@@ -140,57 +173,197 @@ export default function ProjectDetailModal({
 
             {project.visualStack && project.visualStack.length > 0 && (
               <div className="space-y-2">
-                <h4 className="text-xs font-bold text-pink-600 dark:text-pink-400 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-pink-500" />
-                  Visual & Interaction
-                </h4>
+                <h3 className="text-h3 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-text-primary" />
+                  Visual Skills
+                </h3>
                 <div className="flex flex-wrap gap-1.5">
                   {project.visualStack.map((item) => (
-                    <span
-                      key={item}
-                      className="px-2.5 py-1 text-xs rounded-lg bg-pink-50/50 dark:bg-pink-950/30 text-pink-700 dark:text-pink-300 font-medium border border-pink-100 dark:border-pink-900/40"
-                    >
+                    <Tag key={item} size="md" color="purple">
                       {item}
-                    </span>
+                    </Tag>
                   ))}
                 </div>
               </div>
             )}
           </div>
+        </div>
 
-          {/* Action Links */}
-          <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
-            {project.demoUrl && (
-              <a
-                href={project.demoUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="px-4 py-2 text-xs font-semibold rounded-xl bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-white transition-colors flex items-center gap-1.5"
-              >
-                Live Demo ↗
-              </a>
-            )}
-            {project.githubUrl && (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="px-4 py-2 text-xs font-semibold rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center gap-1.5"
-              >
-                GitHub Repo ↗
-              </a>
-            )}
-            {project.blogPostUrl && (
-              <a
-                href={project.blogPostUrl}
-                className="px-4 py-2 text-xs font-semibold rounded-xl border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors flex items-center gap-1.5"
-              >
-                개발 기록 (Post) ↗
-              </a>
-            )}
-          </div>
+        {/* Action Links */}
+        <div className="sticky bottom-0 w-full flex justify-end items-center gap-4 p-4 border-t border-border-default bg-surface-sub">
+          {project.demoUrl && (
+            <LinkButton
+              href={project.demoUrl}
+              target="_blank"
+              variant="primary"
+              size="sm"
+              className="max-md:flex-1"
+            >
+              Live Demo ↗
+            </LinkButton>
+          )}
+          {project.githubUrl && (
+            <LinkButton
+              href={project.githubUrl}
+              target="_blank"
+              variant="secondary"
+              size="sm"
+              className="max-md:flex-1"
+            >
+              GitHub Repo ↗
+            </LinkButton>
+          )}
         </div>
       </div>
     </div>
   );
+
+  // return (
+  //   <div className="fixed inset-0 z-30 flex items-end sm:items-center justify-center sm:p-8">
+  //     {/* Background Backdrop (클릭 시 닫힘) */}
+  //     <div
+  //       className="hidden sm:fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+  //       onClick={onClose}
+  //     />
+
+  //     <div className="absolute top-4 left-4 bg-surface-sub z-50">
+  //       <Button
+  //         variant="ghost"
+  //         onClick={handleClose}
+  //         className=" block sm:hidden w-8 h-8 rounded-md"
+  //       >
+  //         <X />
+  //       </Button>
+  //     </div>
+
+  //     {/* Modal Container */}
+  //     <div className="relative w-full max-w-4xl h-[calc(100vh-64px)] sm:h-fit sm:max-h-[calc(100vh-64)] bg-surface-base sm:border border-border-default sm:rounded-xl shadow-2xl overflow-y-auto z-15 flex flex-col transition-all">
+  //       {/* Header Bar */}
+  //       <div className="hidden sm:flex h-16 sticky top-0 z-16 items-center justify-between p-4 bg-surface-sub border-b border-border-default">
+  //         <div className="flex items-center gap-2">
+  //           <span className="text-base font-medium">{project.domain}</span>
+  //           <span className="text-sub text-text-secondary">
+  //             • {project.period}
+  //           </span>
+  //         </div>
+
+  //         {/* Close Button */}
+  //         <Button
+  //           variant="ghost"
+  //           onClick={handleClose}
+  //           className="w-8 h-8 rounded-md"
+  //         >
+  //           <X />
+  //         </Button>
+  //       </div>
+
+  //       {/* Modal Content Area */}
+  //       <div className="p-4 h-full relative flex flex-col gap-4">
+  //         {/* Title & Summary */}
+  //         <h1 className="text-h1 font-bold">{project.title}</h1>
+
+  //         {/* Detailed Description */}
+  //         <p className="text-base">{project.description}</p>
+
+  //         {/* Key Engineering / Visual Challenge */}
+  //         {project.keyChallenge && (
+  //           <div className="p-4 border-t border-b border-border-default bg-surface-sub space-y-1">
+  //             <h2 className="text-h2">핵심 과제</h2>
+  //             <p className="text-base">{project.keyChallenge}</p>
+  //           </div>
+  //         )}
+
+  //         {/* Project Media Preview (Video / Poster) */}
+  //         {project.videoUrl && (
+  //           <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-black border border-gray-200 dark:border-gray-800">
+  //             <iframe
+  //               src={project.videoUrl}
+  //               className="w-full h-full"
+  //               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  //               allowFullScreen
+  //             />
+  //           </div>
+  //         )}
+  //         {project.poster && (
+  //           <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-800">
+  //             <Image
+  //               src={project.poster.src}
+  //               alt={project.title}
+  //               width={project.poster.width}
+  //               height={project.poster.height}
+  //               className="w-full h-full object-cover"
+  //             />
+  //           </div>
+  //         )}
+
+  //         {/* Applied Stacks */}
+  //         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+  //           {project.devStack && project.devStack.length > 0 && (
+  //             <div className="space-y-2">
+  //               <h3 className="text-h3 flex items-center gap-1.5">
+  //                 <span className="w-1.5 h-1.5 rounded-full bg-text-primary" />
+  //                 Development Skills
+  //               </h3>
+  //               <div className="flex flex-wrap gap-1.5">
+  //                 {project.devStack.map((item) => (
+  //                   <Tag key={item} size="md" color="blue">
+  //                     {item}
+  //                   </Tag>
+  //                 ))}
+  //               </div>
+  //             </div>
+  //           )}
+
+  //           {project.visualStack && project.visualStack.length > 0 && (
+  //             <div className="space-y-2">
+  //               <h3 className="text-h3 flex items-center gap-1.5">
+  //                 <span className="w-1.5 h-1.5 rounded-full bg-text-primary" />
+  //                 Visual Skills
+  //               </h3>
+  //               <div className="flex flex-wrap gap-1.5">
+  //                 {project.visualStack.map((item) => (
+  //                   <Tag key={item} size="md" color="purple">
+  //                     {item}
+  //                   </Tag>
+  //                 ))}
+  //               </div>
+  //             </div>
+  //           )}
+  //         </div>
+  //       </div>
+
+  //       {/* Action Links */}
+  //       <div className="sticky bottom-0 w-full flex justify-items-stretch items-center gap-3 py-2 lg:py-4 border-t border-border-default">
+  //         {project.demoUrl && (
+  //           <a
+  //             href={project.demoUrl}
+  //             target="_blank"
+  //             rel="noreferrer"
+  //             className="px-4 py-2 text-xs font-semibold rounded-xl bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-white transition-colors flex items-center gap-1.5"
+  //           >
+  //             Live Demo ↗
+  //           </a>
+  //         )}
+  //         {project.githubUrl && (
+  //           <a
+  //             href={project.githubUrl}
+  //             target="_blank"
+  //             rel="noreferrer"
+  //             className="px-4 py-2 text-xs font-semibold rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center gap-1.5"
+  //           >
+  //             GitHub Repo ↗
+  //           </a>
+  //         )}
+  //         {project.blogPostUrl && (
+  //           <a
+  //             href={project.blogPostUrl}
+  //             className="px-4 py-2 text-xs font-semibold rounded-xl border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors flex items-center gap-1.5"
+  //           >
+  //             개발 기록 (Post) ↗
+  //           </a>
+  //         )}
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
 }

@@ -76,9 +76,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     // 2. Size별 스타일 정의
     const sizeStyles: Record<ButtonSize, string> = {
-      sm: "h-8 px-3 text-sub gap-1.5 rounded-md",
-      md: "h-10 px-4 text-base gap-2 rounded-lg font-medium",
-      lg: "h-12 px-5 text-h3 gap-2.5 rounded-xl font-medium",
+      sm: "h-8 px-2 text-sub gap-1.5 rounded-md",
+      md: "h-10 px-3 text-base gap-2 rounded-lg font-medium",
+      lg: "h-12 px-4 text-h3 gap-2.5 rounded-xl font-medium",
     };
 
     const isDisabled = disabled || isLoading;

@@ -13,8 +13,7 @@ export function System({ size = "24px", className = "" }: IconProps) {
       strokeWidth="2px"
       className={className}
     >
-      <rect x="4" y="4" width="16" height="11" rx="2" ry="2"/>
-      <path d="M7,20h10M12,20v-5"/>
+      <path d="M20,16H4c-1.1,0-2-.9-2-2V5c0-1.1.9-2,2-2h16c1.1,0,2,.9,2,2v9c0,1.1-.9,2-2,2ZM7,21h10M12,21v-5"/>
     </svg>
   )
 }

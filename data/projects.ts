@@ -1,6 +1,6 @@
 import { Project } from "@/types";
 
-export const DUMMY_PROJECTS: Project[] = [
+export const PROJECTS: Project[] = [
   {
     id: "proj-1",
     slug: "mkst-frontend",
@@ -50,8 +50,10 @@ export const DUMMY_PROJECTS: Project[] = [
     devStack: ["Next.js", "TypeScript", "Tailwind CSS"],
     visualStack: ["UI/UX Design", "Figma"],
     githubUrl: "https://github.com/yeoheung00/typing_meter",
+    demoUrl: "https://wongozi.mink-stud.io",
     keyChallenge:
       "한글의 초성, 중성, 종성의 조합과 원고지의 문장부호 작성 규칙 등을 철저히 구현하였습니다.",
+    videoUrl: "https://www.youtube.com/embed/0v8aPkF8Y-A"
   },
   {
     id: "proj-4",
@@ -85,6 +87,7 @@ export const DUMMY_PROJECTS: Project[] = [
     devStack: ["Next.js", "TypeScript", "CSS Module"],
     visualStack: ["Illustrator"],
     githubUrl: "https://github.com/yeoheung00/THREE_TO_EIGHTY_POPUP",
+    demoUrl: "https://three-to-eighty-popup.vercel.app/",
     keyChallenge:
       "의뢰인(디자이너)과의 개발 관련 배경지식 차이에서 기인한 오류를, 디자인을 전공했던 경험을 살려 디자인적 의도와 실제 개발 시 고려해야 할 점을 적절히 타협할 수 있도록 리드하였습니다.",
   },

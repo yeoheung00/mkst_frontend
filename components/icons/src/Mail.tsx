@@ -1,6 +1,6 @@
 import { IconProps } from "../type";
 
-export function Dark({ size = "24px", className = "" }: IconProps) {
+export function Mail({ size = "24px", className = "" }: IconProps) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -13,7 +13,7 @@ export function Dark({ size = "24px", className = "" }: IconProps) {
       strokeWidth="2px"
       className={className}
     >
-      <path d="M15.5,17c-4.69,0-8.5-3.81-8.5-8.5,0-2.47,1.06-4.68,2.73-6.23C5.3,3.3,2,7.26,2,12c0,5.52,4.48,10,10,10,4.74,0,8.7-3.3,9.73-7.73-1.55,1.68-3.77,2.73-6.23,2.73Z"/>
+      <path d="M20,20H4c-1.1,0-2-.9-2-2V6c0-1.1.9-2,2-2h16c1.1,0,2,.9,2,2v12c0,1.1-.9,2-2,2ZM2,9l8.21,4.11c1.13.56,2.45.56,3.58,0l8.21-4.11"/>
     </svg>
   )
 }

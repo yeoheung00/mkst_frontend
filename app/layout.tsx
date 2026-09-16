@@ -6,7 +6,7 @@ import Header from "@/components/layout/header/Header";
 import Sidebar from "@/components/layout/sidebar/Sidebar";
 import { getAllCategories } from "@/lib/api/blog";
 import { auth } from "@/auth";
-import { Footer } from "@/components/layout/Footer";
+import Footer from "@/components/layout/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

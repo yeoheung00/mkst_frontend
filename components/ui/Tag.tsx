@@ -13,6 +13,7 @@ interface TagProps {
   children: React.ReactNode;
   color?: TagColor;
   className?: string;
+  size?: "sm" | "md" | "lg";
 }
 
 const TAILWIND_PRESETS: Record<TagColor, string> = {
@@ -25,16 +26,23 @@ const TAILWIND_PRESETS: Record<TagColor, string> = {
   gray: "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700",
 };
 
+const SIZE_PRESETS: Record<"sm" | "md" | "lg", string> = {
+  sm: "px-1.5 py-0.5 text-subest",
+  md: "px-2 py-1 text-sub",
+  lg: "px-3 py-1.5 text-base",
+};
+
 export default function Tag({
   children,
   color = "blue",
   className = "",
+  size = "sm",
 }: TagProps) {
   const colorClass = TAILWIND_PRESETS[color] || TAILWIND_PRESETS.blue;
-
+  const sizeClass = SIZE_PRESETS[size] || SIZE_PRESETS.sm;
   return (
     <span
-      className={`w-fit inline-flex items-center text-subest px-1.5 py-0.5 rounded-md border ${colorClass} ${className}`}
+      className={`w-fit inline-flex items-center ${sizeClass} rounded-md border ${colorClass} ${className}`}
     >
       {children}
     </span>

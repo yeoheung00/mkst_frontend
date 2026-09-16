@@ -13,7 +13,7 @@ export function Send({ size = "24px", className = "" }: IconProps) {
       strokeWidth="2px"
       className={className}
     >
-      <path d="M4,4 l16,8 l-16,8 l2,-8 Z M6,12 h4"/>
+      <path d="M3,3l18,9L3,21l3-9L3,3ZM6,12h6"/>
     </svg>
   )
 }

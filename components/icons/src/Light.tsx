@@ -13,8 +13,7 @@ export function Light({ size = "24px", className = "" }: IconProps) {
       strokeWidth="2px"
       className={className}
     >
-      <circle cx="12" cy="12" r="4"/>
-      <path d="M12,3v2M12,19v2M4.21,7.5l1.73,1M18.06,15.5l1.73,1M19.79,7.5l-1.73,1M5.94,15.5l-1.73,1"/>
+      <path d="M17,12c0,2.76-2.24,5-5,5s-5-2.24-5-5,2.24-5,5-5,5,2.24,5,5ZM12,2v2M12,20v2M5.07,8l-1.73-1M20.66,17l-1.73-1M20.66,7l-1.73,1M3.34,17l1.73-1"/>
     </svg>
   )
 }

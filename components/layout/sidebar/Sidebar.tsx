@@ -12,8 +12,8 @@ import { signIn, signOut } from "next-auth/react";
 import {
   About,
   Box,
-  QuillPen,
   DirectionDown,
+  FountationPen,
   User,
   Signout,
 } from "@/components/icons";
@@ -25,30 +25,31 @@ interface Props {
 
 export default function Sidebar({ session, initialCategories }: Props) {
   const { isOpen, isExpanded } = useSidebar();
+  const path = usePathname();
   return (
     <aside
       className={`
       /* narrow */
       w-full
       fixed
-      max-xl:h-full
+      h-full
       ${isOpen ? "left-0" : "-left-full"}
 
       /* wide */
-      xl:left-0
-      xl:sticky
-      xl:h-[calc(100vh-64px)]
-      xl:border-border-default
-      xl:border-r
-      xl:shrink-0
-      ${isExpanded ? "xl:w-64" : "xl:w-16"}
+      md:left-0
+      md:sticky
+      md:h-[calc(100vh-64px)]
+      md:shrink-0
+      ${isExpanded ? "md:w-48" : "md:w-16"}
 
       /* common */
-      top-16 z-20 transition-[width,left] duration-300 ease-in-out`}
+      ${path !== "/" ? "bg-surface-sub" : "backdrop-blur-sm"}
+      top-16 z-20 transition-all duration-300 ease-in-out`}
     >
-      <div className="w-full min-h-full bg-surface-sub flex flex-col xl:flex-col-reverse xl:justify-between">
+      <div className="w-full min-h-full flex flex-col md:flex-col-reverse md:justify-between">
+        <span className="hidden md:block absolute right-0 h-full w-px bg-border-default"></span>
         <UserLink session={session} />
-        <div className="flex flex-col xl:gap-2 p-4">
+        <div className="flex flex-col md:gap-2 p-4">
           <LinkItem href="/about" value="About">
             <About />
           </LinkItem>
@@ -130,7 +131,7 @@ function LinkItem({ href, value, children }: LinkItemProps) {
         {children}
       </div>
       <span
-        className={`${isExpanded ? "opacity-100" : "opacity-100 xl:opacity-0"} transition-opacity duration-300 ease-in-out`}
+        className={`${isExpanded ? "opacity-100" : "opacity-100 md:opacity-0"} transition-opacity duration-300 ease-in-out`}
       >
         {value}
       </span>
@@ -164,10 +165,10 @@ function BlogLinks({ initialCategories }: { initialCategories: Category[] }) {
         className={`w-full h-8 flex flex-row gap-2 items-center  hover:text-primary-base text-base rounded-md overflow-hidden ${path === href || (isActive && !isDowned) || (!isExpanded && isActive) ? "bg-surface-subest text-primary-base" : "text-text-primary"}`}
       >
         <div className="w-8 h-8 flex shrink-0 items-center justify-center">
-          <QuillPen />
+          <FountationPen />
         </div>
         <span
-          className={`${isExpanded ? "opacity-100" : "opacity-100 xl:opacity-0"} transition-opacity duration-300 ease-in-out`}
+          className={`${isExpanded ? "opacity-100" : "opacity-100 md:opacity-0"} transition-opacity duration-300 ease-in-out`}
         >
           Blog
         </span>

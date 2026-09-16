@@ -1,6 +1,6 @@
 import { IconProps } from "../type";
 
-export function Dark({ size = "24px", className = "" }: IconProps) {
+export function Sparkle({ size = "24px", className = "" }: IconProps) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -13,7 +13,7 @@ export function Dark({ size = "24px", className = "" }: IconProps) {
       strokeWidth="2px"
       className={className}
     >
-      <path d="M15.5,17c-4.69,0-8.5-3.81-8.5-8.5,0-2.47,1.06-4.68,2.73-6.23C5.3,3.3,2,7.26,2,12c0,5.52,4.48,10,10,10,4.74,0,8.7-3.3,9.73-7.73-1.55,1.68-3.77,2.73-6.23,2.73Z"/>
+      <path d="M10.91,2.72l-2.46,5.74-5.74,2.46c-.96.41-.96,1.76,0,2.17l5.74,2.46,2.46,5.74c.41.96,1.76.96,2.17,0l2.46-5.74,5.74-2.46c.96-.41.96-1.76,0-2.17l-5.74-2.46-2.46-5.74c-.41-.96-1.76-.96-2.17,0Z"/>
     </svg>
   )
 }

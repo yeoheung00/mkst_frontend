@@ -13,7 +13,7 @@ export function Hamburger({ size = "24px", className = "" }: IconProps) {
       strokeWidth="2px"
       className={className}
     >
-      <path d="M4,4h16M4,20h16M4,12h16"/>
+      <path d="M3,3h18M3,21h18M3,12h18"/>
     </svg>
   )
 }
