@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import { SignJWT } from "jose";
 import GoogleProvider from "next-auth/providers/google";
+import KakaoProvider from "next-auth/providers/kakao";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
@@ -11,20 +12,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
     }),
+    KakaoProvider({
+      clientId: process.env.AUTH_KAKAO_ID,
+      clientSecret: process.env.AUTH_KAKAO_SECRET,
+    }),
   ],
   callbacks: {
     async jwt({ token, user, account }) {
       if (account) {
         if (!user) throw new Error("유저 정보 없음 (callback/jwt)");
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/signin`, {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signin`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
               name: user.name ?? "",
-              email: user.email ?? "",
+              email: user.email ?? null,
               image: user.image ?? "",
               provider: account.provider,
               providerAccountId: account.providerAccountId,

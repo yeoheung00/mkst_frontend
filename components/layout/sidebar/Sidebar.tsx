@@ -84,7 +84,7 @@ function UserLink({ session }: { session: Session | null }) {
         <span
           className={`shrink-0 group-hover:underline grow text-base ${isExpanded ? "opacity-100" : "opacity-0"} transition-opacity duration-300 ease-in-out`}
         >
-          {session ? (session.user.name ?? "") : "비회원"}
+          {session ? (session.user.name ?? "") : ""}
         </span>
       </Link>
       <div
@@ -99,13 +99,15 @@ function UserLink({ session }: { session: Session | null }) {
             <Signout />
           </Button>
         ) : (
-          <Button
-            onClick={() => signIn("google")}
-            variant="border"
-            className="rounded-md h-8 px-2"
-          >
-            로그인
-          </Button>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => signIn("kakao")}
+                variant="secondary"
+                size="sm"
+              >
+                카카오로 로그인
+              </Button>
+            </div>
         )}
       </div>
     </div>
@@ -148,7 +150,7 @@ function BlogLinks({ initialCategories }: { initialCategories: Category[] }) {
   const isActive = path.startsWith("/blog");
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/blog/categories`,
+    `${process.env.NEXT_PUBLIC_API_URL}/blog/categories`,
     fetcher,
     {
       fallbackData: initialCategories,
@@ -160,7 +162,7 @@ function BlogLinks({ initialCategories }: { initialCategories: Category[] }) {
   return (
     <div className="flex flex-col relative">
       <Link
-        href={href}
+        href={`${href}/all`}
         onClick={() => setIsOpen(false)}
         className={`w-full h-8 flex flex-row gap-2 items-center  hover:text-primary-base text-base rounded-md overflow-hidden ${path === href || (isActive && !isDowned) || (!isExpanded && isActive) ? "bg-surface-subest text-primary-base" : "text-text-primary"}`}
       >

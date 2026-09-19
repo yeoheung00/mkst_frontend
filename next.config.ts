@@ -1,12 +1,30 @@
 import type { NextConfig } from "next";
 const isDev = process.env.NODE_ENV !== 'production';
 const nextConfig: NextConfig = {
+  redirects: async () => {
+    return [
+      {
+        source: '/blog',
+        destination: '/blog/all',
+        permanent: true,
+      },
+      {
+        source: '/blog/write',
+        destination: '/blog/write/new',
+        permanent: true,
+      }
+    ];
+  },
   images: {
     dangerouslyAllowLocalIP: isDev,
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com', // 구글 프로필 이미지 도메인
+      },
+      {
+        protocol: 'http',
+        hostname: 'img1.kakaocdn.net',
       },
       {
         protocol: 'http',

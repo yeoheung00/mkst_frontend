@@ -124,7 +124,7 @@ export default function ProjectDetailModal({
 
           {/* Key Engineering / Visual Challenge */}
           {project.keyChallenge && (
-            <div className="pl-2 rounded-sm border-l-4 border-primary-base">
+            <div className="pl-2 border-l-2 border-border-default space-y-2">
               <h2 className="text-h2">핵심 과제</h2>
               <p className="text-base">{project.keyChallenge}</p>
             </div>
@@ -142,7 +142,7 @@ export default function ProjectDetailModal({
             </div>
           )}
           {project.poster && (
-            <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-800">
+            <div className="relative w-full rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-800">
               <Image
                 src={project.poster.src}
                 alt={project.title}

@@ -80,10 +80,14 @@ export default function ProjectCard({ project, onClick }: ProjectCardProps) {
 
       <div className="w-full flex gap-4 items-center">
         {project.demoUrl && (
-          <LinkButton href={project.demoUrl} target="_blank" variant="primary" size="sm" className="flex-1">Live Demo ↗</LinkButton>
+          <LinkButton href={project.demoUrl} target="_blank" variant="primary" size="sm" className="flex-1" onClick={(e) => e.stopPropagation()}>
+            Live Demo ↗
+          </LinkButton>
         )}
         {project.githubUrl && (
-          <LinkButton href={project.githubUrl} target="_blank" variant="secondary" size="sm" className="flex-1">Github Repo ↗</LinkButton>
+          <LinkButton href={project.githubUrl} target="_blank" variant="secondary" size="sm" className="flex-1" onClick={(e) => e.stopPropagation()}>
+            Github Repo ↗
+          </LinkButton>
         )}
       </div>
     </div>

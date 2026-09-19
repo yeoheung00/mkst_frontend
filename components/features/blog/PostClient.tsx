@@ -4,32 +4,41 @@ import {
   CategoryCombobox,
   Category,
 } from "@/components/features/blog/CategoryCombobox";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PostEditor, { PostEditorRef } from "./PostEditor";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { JSONContent } from "@tiptap/react";
 import { useRouter } from "next/navigation";
 import { Session } from "next-auth";
-import { CreatePostInput, PostImage } from "@/types";
-import { createPost } from "@/lib/api/blog";
+import { CreatePostInput, Post, PostImage } from "@/types";
+import { createPost, editPost } from "@/lib/api/blog";
 import { getPostSummary } from "@/lib/util";
 
-export default function PostClient({ categories, session }: { categories: Category[], session: Session | null }) {
-  const [title, setTitle] = useState("");
-  const [categoryName, setCategoryName] = useState("");
+export default function PostClient({
+  categories,
+  session,
+  post,
+}: {
+  categories: Category[];
+  session: Session | null;
+  post: Post | null;
+}) {
+  const [title, setTitle] = useState(post ? post.title : "");
+  const [categoryName, setCategoryName] = useState(
+    post ? post.category.name : "",
+  );
   const editorRef = useRef<PostEditorRef>(null);
   const router = useRouter();
-  console.log(categories);
-
-  if (!session || !session.user.id) {
-    alert("로그인이 필요합니다.");
-    router.push("/");
-  }
 
   const handleSubmit = async () => {
     if (!title.trim()) {
       alert("제목을 입력해주세요.");
+      return;
+    }
+
+    if (!categories) {
+      alert("카테고리를 선택해주세요.");
       return;
     }
 
@@ -54,14 +63,16 @@ export default function PostClient({ categories, session }: { categories: Catego
           traverse(child);
         }
       }
-    }
+    };
 
     traverse(contentJSON);
     let count = 0;
 
     const filteredImages: PostImage[] = Array.from(imageSrcs)
-      .map(url => {
-        const img = contentIMAGES.find(img => img.url === url);
+      .map((url) => {
+        const img = contentIMAGES.find(
+          (img) => `${process.env.NEXT_PUBLIC_SERVER_URL}${img.url}` === url,
+        );
         return { ...img, displayOrder: count++ } as PostImage;
       })
       .filter((img): img is PostImage => img !== undefined);
@@ -74,26 +85,38 @@ export default function PostClient({ categories, session }: { categories: Catego
       images: filteredImages,
     };
 
-    if(!session || !session.accessToken) {
+    if (!session || !session.accessToken) {
       alert("엑세스 토큰이 필요합니다.");
       return;
     }
 
-    const res = await createPost(payload, session.accessToken);
-    if (!res.success) {
-      alert(res.error);
-      return;
+    if (post) {
+      const res = await editPost(post.id, payload, session.accessToken);
+      if (!res.success) {
+        alert(res.error);
+        return;
+      }
+      router.push(`/blog/${res.data.category.slug}/${res.data.slug}`);
+    } else {
+      const res = await createPost(payload, session.accessToken);
+      if (!res.success) {
+        alert(res.error);
+        return;
+      }
+      router.push(`/blog/${res.data.category.slug}/${res.data.slug}`);
     }
-
-    router.push(`/blog/${res.data.category.slug}/${res.data.slug}`);
   };
   return (
     <div className="w-full max-w-5xl flex flex-col gap-4 p-4">
       <div className="w-full flex flex-row items-center justify-between">
         <h1 className="text-2xl font-black">새 포스트 작성</h1>
         <div className="flex flex-row gap-2">
-          <Button size="md" variant="border">취소</Button>
-          <Button size="md" onClick={handleSubmit}>게시</Button>
+          <Button size="md" variant="border">
+            취소
+          </Button>
+          <Button size="md" onClick={handleSubmit}>
+            게시
+          </Button>
         </div>
       </div>
       <div className="flex flex-col gap-2">
@@ -122,7 +145,7 @@ export default function PostClient({ categories, session }: { categories: Catego
         <label htmlFor="editor" className="text-xl font-bold">
           본문
         </label>
-        <PostEditor ref={editorRef} />
+        <PostEditor ref={editorRef} post={post} session={session} />
       </div>
     </div>
   );

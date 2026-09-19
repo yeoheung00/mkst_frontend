@@ -4,6 +4,12 @@ export interface Category {
   name: string;
 }
 
+export interface UploadedImage {
+  url: string;
+  width: number | null;
+  height: number | null;
+}
+
 export interface PostImage {
   url: string;
   width: number;
@@ -48,10 +54,17 @@ export interface ResCreatePost {
 }
 
 export interface Post {
+  id: string;
+  author: {
+    id: string;
+    name: string;
+    image: string;
+  }
   category: { name: string };
   title: string;
   toc: TocItem[];
   content: Record<string, unknown>;
+  images: UploadedImage[];
   createdAt: string;
   updatedAt: string;
   comments: Comment[];
@@ -60,9 +73,31 @@ export interface Post {
   }
 }
 
+export interface CreateCommentInput {
+  postId: string;
+  content: string;
+  parentId: string | null;
+}
+
+export interface EditCommentInput {
+  content: string;
+}
+
 export interface Comment {
   id: string;
+  status?: "pending" | "confirmed";
   content: string;
-  author: string;
-  date: string;
+  parentId: string | null;
+  deletedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  author: {
+    id: string;
+    name: string;
+    image: string | null;
+  };
+}
+
+export interface CommentWithReplies extends Comment {
+  replies: CommentWithReplies[];
 }

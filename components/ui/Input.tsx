@@ -88,12 +88,12 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             className={`
               w-full rounded-lg transition-all duration-150
               ${currentSize.input}
-              text-text-primary placeholder:text-text-muted bg-surface-sub
+              text-text-primary placeholder:text-text-muted bg-surface-card
               border
               ${
                 isError
                   ? "border-red-500/80 focus:border-red-500 focus:ring-4 focus:ring-red-500/20"
-                  : "border-border-default hover:border-border-hover focus:border-primary-base focus:bg-surface-card focus:ring-4 focus:ring-primary-ring"
+                  : "border-border-default hover:border-border-hover focus:border-primary-base focus:ring-4 focus:ring-primary-ring"
               }
               ${leftIcon ? currentSize.leftPadding : "px-3.5"}
               ${rightIcon ? currentSize.rightPadding : "px-3.5"}

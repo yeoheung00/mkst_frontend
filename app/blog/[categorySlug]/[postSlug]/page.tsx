@@ -2,8 +2,14 @@ import PostViewer from "@/components/features/blog/PostViewer";
 import { formatRelativeDate } from "@/lib/util";
 import Link from "next/link";
 import CommentSection from "@/components/features/blog/CommentSection";
-import { getPost } from "@/lib/api/blog";
+import { getPost, deletePost } from "@/lib/api/blog";
 import { TocItem, Post } from "@/types";
+import { Suspense } from "react";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+import { Button } from "@/components/ui/Button";
+import PostControl from "@/components/features/blog/PostControl";
+import { LinkButton } from "@/components/ui/LinkButton";
 
 interface Props {
   params: Promise<{
@@ -13,41 +19,46 @@ interface Props {
 }
 
 export default async function BlogCategoryPost({ params }: Props) {
+  const session = await auth();
   const { categorySlug, postSlug } = await params;
   const postRes = await getPost(postSlug);
   if (!postRes.success) return <div>Get post failed</div>;
   const post = postRes.data as Post;
   return (
-    <div className="flex flex-row items-stretch w-full max-w-7xl gap-4 px-4">
-      <div className="grow flex flex-col gap-8 py-4 xl:py-16">
-        <div className="flex flex-row items-center h-8 gap-2 text-md font-light text-text-secondary">
-          <Link className="hover:text-text-primary" href="/">
-            Home
-          </Link>
-          <span>/</span>
-          <Link
-            className="hover:text-text-primary"
-            href={`/blog/${categorySlug}`}
-          >
-            {post.category.name}
-          </Link>
-          <span>/</span>
-          <span>{post.title}</span>
+    <div className="w-full flex flex-row items-stretch justify-center gap-4 px-4">
+
+      {/* post content */}
+      <div className="grow max-w-3xl space-y-4 py-4">
+
+        {/* header */}
+        <div className="w-full space-y-2 pb-2 border-b border-border-default">
+          <Link href={`/blog/${categorySlug}`} className="block text-h4 font-light">{post.category.name}</Link>
+          {/* title */}
+          <h1 className="text-h1">{post.title}</h1>
+
+          {/* meta & controls */}
+          <div className="flex gap-2 justify-between">
+            <div className="flex gap-2 items-center">
+              <span className="text-sub text-text-secondary">
+                {formatRelativeDate(post.createdAt)}
+                {post.createdAt !== post.updatedAt && ` (수정 ${formatRelativeDate(post.updatedAt)})`}
+              </span>
+            </div>
+            {session && post.author.id === session.user.id && session.accessToken && <PostControl token={session.accessToken} postSlug={postSlug} postId={post.id} categorySlug={categorySlug} />}
+          </div>
         </div>
-        <div className="h-16 flex flex-col justify-between">
-          <h1 className="text-4xl font-semibold">{post.title}</h1>
-          <span className="text-sm text-text-secondary">
-            {formatRelativeDate(post.createdAt)}
-            {post.createdAt !== post.updatedAt &&
-              `(수정 ${formatRelativeDate(post.updatedAt)})`}
-          </span>
-        </div>
-        <span className="w-full h-px bg-border-default" />
+
+        {/* content */}
         <PostViewer content={post.content} />
-        <span className="w-full h-px bg-border-default" />
-        <CommentSection initialComments={post.comments} />
+
+        {/* comments */}
+        <Suspense fallback={<CommentSkeleton />}>
+          <CommentSection postId={post.id} />
+        </Suspense>
       </div>
-      <div className="hidden xl:block w-56 shrink-0">
+
+      {/* toc */}
+      <div className="hidden lg:block w-56 shrink-0">
         <Toc toc={post.toc} />
       </div>
     </div>
@@ -56,7 +67,7 @@ export default async function BlogCategoryPost({ params }: Props) {
 
 function Toc({ toc }: { toc: TocItem[] }) {
   return (
-    <div className="w-full sticky top-20 mt-56 p-4 flex flex-col bg-surface-sub rounded-2xl">
+    <div className="w-full sticky top-20 mt-56 p-4 flex flex-col bg-surface-sub rounded-xl border border-border-default">
       <span className="text-lg font-semibold mb-2">On this Page</span>
       {toc.map((item, index) => (
         <Link
@@ -73,4 +84,12 @@ function Toc({ toc }: { toc: TocItem[] }) {
       ))}
     </div>
   );
+}
+
+function CommentSkeleton() {
+  return (
+    <section className="w-full h-fit py-8 text-center text-base">
+      댓글 조회중...
+    </section>
+  )
 }

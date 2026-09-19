@@ -19,6 +19,7 @@ class Point {
   activeColor: Color | null;
   maxX: number;
   maxY: number;
+  dpr: number;
   neighbors: Point[];
 
   constructor(
@@ -30,6 +31,7 @@ class Point {
     maxY: number,
     color: Color,
     activeColor: Color,
+    dpr: number,
   ) {
     this.id = id;
     this.x = x;
@@ -39,6 +41,7 @@ class Point {
     this.activeColor = activeColor;
     this.maxX = maxX;
     this.maxY = maxY;
+    this.dpr = dpr;
     this.neighbors = [];
   }
   setColor(color: Color, activeColor: Color) {
@@ -49,12 +52,22 @@ class Point {
   addNeighbor(neighbor: Point) {
     this.neighbors.push(neighbor);
   }
+
+  resize(width: number, height: number) {
+    this.x = (this.x / this.maxX) * width;
+    this.y = (this.y / this.maxY) * height;
+    this.maxX = width;
+    this.maxY = height;
+  }
+
   draw(ctx: CanvasRenderingContext2D, mx: number, my: number, delta: number) {
     if (!this.color || !this.activeColor) return;
     const distance = Math.sqrt((this.x - mx) ** 2 + (this.y - my) ** 2);
-    const isEffective = distance < EFFECT_RADIUS;
-    const effectRatio = isEffective ? 1 - distance / EFFECT_RADIUS : 0;
-    const SIZE = (MAX_SIZE - BASE_SIZE) * effectRatio + BASE_SIZE;
+    const isEffective = distance < EFFECT_RADIUS * this.dpr;
+    const effectRatio = isEffective
+      ? 1 - distance / (EFFECT_RADIUS * this.dpr)
+      : 0;
+    const SIZE = ((MAX_SIZE - BASE_SIZE) * effectRatio + BASE_SIZE) * this.dpr;
     if (isEffective) {
       const r =
         (this.activeColor.r - this.color.r) * effectRatio + this.color.r;
@@ -72,8 +85,8 @@ class Point {
     const angle = (this.dir * Math.PI) / 180;
     const dx = Math.cos(angle);
     const dy = Math.sin(angle);
-    this.x += dx * SPEED * delta;
-    this.y += dy * SPEED * delta;
+    this.x += dx * SPEED * delta * this.dpr;
+    this.y += dy * SPEED * delta * this.dpr;
     if (this.x < 0) this.x += this.maxX;
     if (this.x > this.maxX) this.x -= this.maxX;
     if (this.y < 0) this.y += this.maxY;
@@ -90,6 +103,7 @@ class Edge {
   color: Color | null;
   opacity: number;
   activeColor: Color | null;
+  dpr: number;
 
   constructor(
     point1: Point,
@@ -97,12 +111,14 @@ class Edge {
     color: Color,
     activeColor: Color | null,
     opacity: number,
+    dpr: number,
   ) {
     this.point1 = point1;
     this.point2 = point2;
     this.color = color;
     this.opacity = opacity;
     this.activeColor = activeColor;
+    this.dpr = dpr;
   }
 
   draw(ctx: CanvasRenderingContext2D, mx: number, my: number) {
@@ -114,11 +130,13 @@ class Edge {
       (this.point2.x - mx) ** 2 + (this.point2.y - my) ** 2,
     );
     const isEffective =
-      distanceP1 < EFFECT_RADIUS || distanceP2 < EFFECT_RADIUS;
+      distanceP1 < EFFECT_RADIUS * this.dpr ||
+      distanceP2 < EFFECT_RADIUS * this.dpr;
     const effectRatio = isEffective
-      ? 1 - Math.min(distanceP1, distanceP2) / EFFECT_RADIUS
+      ? 1 - Math.min(distanceP1, distanceP2) / (EFFECT_RADIUS * this.dpr)
       : 0;
-    const weight = (MAX_WEIGHT - BASE_WEIGHT) * effectRatio + BASE_WEIGHT;
+    const weight =
+      ((MAX_WEIGHT - BASE_WEIGHT) * effectRatio + BASE_WEIGHT) * this.dpr;
     if (isEffective) {
       const r =
         (this.activeColor.r - this.color.r) * effectRatio + this.color.r;
@@ -142,17 +160,20 @@ class Face {
   color: Color | null;
   opacity: number;
   activeColor: Color | null;
+  dpr: number;
 
   constructor(
     points: Point[],
     color: Color,
     activeColor: Color | null,
     opacity: number,
+    dpr: number,
   ) {
     this.points = points;
     this.color = color;
     this.activeColor = activeColor;
     this.opacity = opacity;
+    this.dpr = dpr;
   }
 
   draw(ctx: CanvasRenderingContext2D, mx: number, my: number) {
@@ -161,11 +182,13 @@ class Face {
     const distanceP2 = Math.hypot(mx - this.points[1].x, my - this.points[1].y);
     const distanceP3 = Math.hypot(mx - this.points[2].x, my - this.points[2].y);
     const isEffective =
-      distanceP1 < EFFECT_RADIUS ||
-      distanceP2 < EFFECT_RADIUS ||
-      distanceP3 < EFFECT_RADIUS;
+      distanceP1 < EFFECT_RADIUS * this.dpr ||
+      distanceP2 < EFFECT_RADIUS * this.dpr ||
+      distanceP3 < EFFECT_RADIUS * this.dpr;
     const effectiveRatio = isEffective
-      ? 1 - Math.min(distanceP1, distanceP2, distanceP3) / EFFECT_RADIUS
+      ? 1 -
+        Math.min(distanceP1, distanceP2, distanceP3) /
+          (EFFECT_RADIUS * this.dpr)
       : 0;
     if (isEffective) {
       const r =
@@ -186,21 +209,19 @@ class Face {
     ctx.fill();
   }
 }
-
-const POINT_COUNT = 90;
-const NEIGHBOR_RADIUS = 250;
+const NEIGHBOR_RADIUS = 180;
 const NEIGHBOR_LIMIT = 5;
 
-const EFFECT_RADIUS = 200;
+const EFFECT_RADIUS = 180;
 
 /* Point */
-const BASE_SIZE = 5;
-const MAX_SIZE = 15;
+const BASE_SIZE = 3;
+const MAX_SIZE = 8;
 const SPEED = 5;
 
 /* Edge */
-const BASE_WEIGHT = 2;
-const MAX_WEIGHT = 8;
+const BASE_WEIGHT = 1;
+const MAX_WEIGHT = 4;
 
 const DURATION = 2;
 const CIRCULAR_DELAY = 6000;
@@ -350,36 +371,47 @@ export default function HeroSection() {
   }, [mode]);
 
   useEffect(() => {
+    const dpr = window.devicePixelRatio;
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     points.current = [];
 
-    const rect = canvas.getBoundingClientRect();
-    const width = rect.width * 2;
-    const height = rect.height * 2;
-    canvas.width = width;
-    canvas.height = height;
+    const resizeCanvas = () => {
+      const width = window.innerWidth * dpr;
+      const height = window.innerHeight * dpr;
+      canvas.width = width;
+      canvas.height = height;
+      points.current.forEach((point) => point.resize(width, height));
+
+      const POINT_COUNT = Math.floor((width * height) / 50000);
+      if (points.current.length < POINT_COUNT) {
+        for (let i = points.current.length; i < POINT_COUNT; i++) {
+          const x = Math.random() * width;
+          const y = Math.random() * height;
+          points.current.push(
+            new Point(
+              i + points.current.length,
+              x,
+              y,
+              0,
+              width,
+              height,
+              currentPalette.current.point,
+              currentActivePalette.current.point,
+              dpr,
+            ),
+          );
+        }
+      } else if (points.current.length > POINT_COUNT) {
+        points.current = points.current.slice(0, POINT_COUNT);
+      }
+    };
+
+    resizeCanvas();
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-
-    for (let i = 0; i < POINT_COUNT; i++) {
-      const x = Math.random() * width;
-      const y = Math.random() * height;
-      points.current.push(
-        new Point(
-          i,
-          x,
-          y,
-          Math.random() * 360,
-          width,
-          height,
-          currentPalette.current.point,
-          currentActivePalette.current.point,
-        ),
-      );
-    }
 
     const ccw = (a: Point, b: Point, c: Point) => {
       const result = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
@@ -436,7 +468,7 @@ export default function HeroSection() {
               point.x - otherPoint.x,
               point.y - otherPoint.y,
             );
-            if (distance < NEIGHBOR_RADIUS) {
+            if (distance < NEIGHBOR_RADIUS * dpr) {
               let isCrossed = false;
               for (const edge of edges.current) {
                 if (
@@ -455,6 +487,7 @@ export default function HeroSection() {
                     currentPalette.current.edge,
                     currentActivePalette.current.edge,
                     currentEdgeOpacity.current,
+                    dpr,
                   ),
                 );
                 point.addNeighbor(otherPoint);
@@ -499,6 +532,7 @@ export default function HeroSection() {
                     currentPalette.current.face,
                     currentActivePalette.current.face,
                     currentFaceOpacity.current,
+                    dpr,
                   ),
                 );
               }
@@ -553,13 +587,15 @@ export default function HeroSection() {
     requestAnimationFrame(animate);
 
     const trackingMouse = (e: MouseEvent) => {
-      const mx = (e.clientX - rect.left) * 2;
-      const my = (e.clientY - rect.top) * 2;
+      const mx = e.clientX * dpr;
+      const my = e.clientY * dpr;
       mouseCoords.current = { mx, my };
     };
     window.addEventListener("mousemove", trackingMouse);
+    window.addEventListener("resize", resizeCanvas);
     return () => {
       window.removeEventListener("mousemove", trackingMouse);
+      window.removeEventListener("resize", resizeCanvas);
     };
   }, []);
 
@@ -594,14 +630,16 @@ export default function HeroSection() {
           <div
             className={`w-fit pl-6 flex flex-col gap-2 ${mode === "exp" ? "h-40 sm:h-36 opacity-100 pt-4" : "h-0 opacity-0 pt-0"} overflow-hidden transition-all duration-300`}
           >
-            <p className="text-h3">
+            <p className={`text-h3 ${mode === "exp" ? "w-fit" : "w-0"}`}>
               저는 호기심이 많은 사람입니다.
               <br />
               궁금한 것이 생기면 탐구하고,
               <br />
               직접 실험하며 원리를 체득합니다.
             </p>
-            <div className="flex flex-col sm:flex-row sm:gap-4 sm:items-center text-base">
+            <div
+              className={`flex flex-col sm:flex-row sm:gap-4 sm:items-center text-base ${mode === "exp" ? "w-fit" : "w-0"}`}
+            >
               저에 대해 조금 더 알고 싶으신가요?
               <Link href="/about" className="text-base text-primary-base">
                 About →
@@ -620,14 +658,16 @@ export default function HeroSection() {
           <div
             className={`w-fit pl-6 flex flex-col gap-2 ${mode === "code" ? "h-40 sm:h-36 opacity-100 pt-4" : "h-0 opacity-0 pt-0"} overflow-hidden transition-all duration-300`}
           >
-            <p className="text-h3">
+            <p className={`text-h3 ${mode === "code" ? "w-fit" : "w-0"}`}>
               실험을 통해 얻은 기술과 지식을
               <br />
               작은 프로젝트로 직접 만들며
               <br />
               온전히 체화합니다.
             </p>
-            <div className="flex flex-col sm:flex-row sm:gap-4 sm:items-center text-base">
+            <div
+              className={`flex flex-col sm:flex-row sm:gap-4 sm:items-center text-base ${mode === "code" ? "w-fit" : "w-0"}`}
+            >
               제가 만든 프로젝트가 궁금하신가요?
               <Link href="/projects" className="text-base text-primary-base">
                 Projects →
@@ -645,14 +685,16 @@ export default function HeroSection() {
           <div
             className={`w-fit pl-6 flex flex-col gap-2 ${mode === "record" ? "h-40 sm:h-36 opacity-100 pt-4" : "h-0 opacity-0 pt-0"} overflow-hidden transition-all duration-300`}
           >
-            <p className="text-h3">
+            <p className={`text-h3 ${mode === "record" ? "w-fit" : "w-0"}`}>
               인간의 기억은 휘발됩니다.
               <br />
               경험이 휘발되지 않도록 기록하고,
               <br />
               다시 꺼내 쓸 지식으로 남깁니다.
             </p>
-            <div className="flex flex-col sm:flex-row sm:gap-4 sm:items-center text-base">
+            <div
+              className={`flex flex-col sm:flex-row sm:gap-4 sm:items-center text-base ${mode === "record" ? "w-fit" : "w-0"}`}
+            >
               저의 기록이 궁금하신가요?
               <Link href="/blog" className="text-base text-primary-base">
                 Blog →

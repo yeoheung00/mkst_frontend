@@ -38,7 +38,7 @@ export default function PostItem({ post }: { post: PostSummary }) {
         {hasImage && (
           <div className="relative h-20 xl:h-24 w-20 xl:w-24 shrink-0 overflow-hidden rounded-md bg-surface-sub border border-border-default">
             <Image
-              src={post.images[0].url}
+              src={`${process.env.NEXT_PUBLIC_SERVER_URL}${post.images[0].url}`}
               alt="썸네일"
               fill
               sizes="94px"

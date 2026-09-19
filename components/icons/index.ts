@@ -2,8 +2,10 @@ export * from './src/About';
 export * from './src/ArrowLeft';
 export * from './src/Book';
 export * from './src/Box';
+export * from './src/Comment';
 export * from './src/Dark';
 export * from './src/DirectionDown';
+export * from './src/Edit';
 export * from './src/FountationPen';
 export * from './src/Hamburger'
 export * from './src/Light';
@@ -14,6 +16,7 @@ export * from './src/Signout'
 export * from './src/X'
 export * from './src/System'
 export * from './src/Sparkle'
+export * from './src/Trashcan'
 export * from './src/User'
 export * from './src/Work'
 export * from './src/What'

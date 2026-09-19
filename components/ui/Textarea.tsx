@@ -7,23 +7,32 @@ export interface TextareaProps
   error?: boolean | string; // boolean 또는 에러 메시지 유무로 에러 상태 제어
   size?: TextareaSize;
   fullWidth?: boolean; // 기본값 true (부모 채움)
+  resize?: "none" | "both" | "horizontal" | "vertical";
+
 }
 
 // Input과 동일한 padding, font-size 스펙 매핑
 const sizeStyles: Record<TextareaSize, { textarea: string; padding: string }> = {
   sm: {
-    textarea: "min-h-8 text-xs",
-    padding: "p-2.5",
+    textarea: "min-h-[42px] text-xs",
+    padding: "p-2",
   },
   md: {
-    textarea: "min-h-8 text-sm",
-    padding: "p-3.5",
+    textarea: "min-h-[52px] text-sm",
+    padding: "p-2",
   },
   lg: {
-    textarea: "min-h-8 text-base",
-    padding: "p-4",
+    textarea: "min-h-16 text-base",
+    padding: "p-2",
   },
 };
+
+const resizeStyles = {
+  "none": "resize-none",
+  "both": "resize",
+  "horizontal": "resize-x",
+  "vertical": "resize-y",
+}
 
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   (
@@ -33,6 +42,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       fullWidth = true,
       disabled,
       className = "",
+      resize = "none",
       ...props
     },
     ref
@@ -45,7 +55,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         ref={ref}
         disabled={disabled}
         className={`
-          rounded-lg transition-all duration-150 resize-y
+          rounded-md transition-all duration-150 block
 
           /* Width Handling */
           ${fullWidth ? "w-full" : "w-auto"}
@@ -56,19 +66,22 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 
           /* Base Typography & Background */
           text-text-primary placeholder:text-text-muted
-          bg-surface-sub
+          bg-surface-card
 
           /* Border & Ring (Input과 동일한 State Handling) */
           border
           ${
             isError
               ? "border-red-500/80 focus:border-red-500 focus:ring-4 focus:ring-red-500/20"
-              : "border-border-default hover:border-border-hover focus:border-primary-base focus:bg-surface-card focus:ring-4 focus:ring-primary-ring"
+              : "border-border-default hover:border-border-hover focus:border-primary-base focus:ring-4 focus:ring-primary-ring"
           }
 
           /* Focus & Disabled States */
           focus:outline-none
           disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-surface-subest
+
+          /* Resize & Rows */
+          ${resize ? `${resizeStyles[resize]}` : ""}
 
           ${className}
         `}

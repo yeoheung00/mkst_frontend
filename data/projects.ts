@@ -15,6 +15,11 @@ export const PROJECTS: Project[] = [
     domain: "Engineering",
     devStack: ["Next.js", "TypeScript", "Tailwind CSS"],
     visualStack: ["UI/UX Design", "Figma", "Illustrator"],
+    poster: {
+      src: "/project/blog.png",
+      width: 3644,
+      height: 2256,
+    },
     githubUrl: "https://github.com/yeoheung00/mkst_frontend",
     keyChallenge:
       "기존 블로그의 새 게시글 등록 시 매번 마크다운을 작성하여 새로 빌드하는 구조에서 탈피하여, 포스팅 페이지에서 직접 게시글을 작성하도록 Tiptap을 활용하여 포스트 에디터를 구현하였습니다.",
@@ -34,6 +39,12 @@ export const PROJECTS: Project[] = [
     devStack: ["Node.js", "Express", "PostgreSQL", "Prisma"],
     visualStack: [],
     githubUrl: "https://github.com/yeoheung00/mkst_backend",
+    poster: {
+      src: "/project/blog.png",
+      width: 3644,
+      height: 2256,
+    },
+    keyChallenge: "홈 서버에 데이터베이스를 구축하여 데이터베이스를 외부에 직접 개방이 아닌 홈 서버상 백엔드를 통하여 정상적인 요청 판단하여 작동하도록 했습니다.",
   },
   {
     id: "proj-3",
@@ -69,8 +80,14 @@ export const PROJECTS: Project[] = [
     domain: "Engineering",
     devStack: ["Next.js", "TypeScript", "CSS Module"],
     visualStack: ["Figma"],
+    poster: {
+      src: "/project/piece-of-cake.png",
+      width: 3644,
+      height: 2256,
+    },
     demoUrl: "https://piece-of-cake.mink-stud.io",
     githubUrl: "https://github.com/yeoheung00/knu-exhibition-dev",
+    keyChallenge: "조각들이 사용자의 드래그에 따라 뒤집히도록, 마우스 좌표와 각 셀에서의 제스쳐 감지 로직을 구현했습니다."
   },
   {
     id: "proj-5",
@@ -86,6 +103,11 @@ export const PROJECTS: Project[] = [
     domain: "Visual",
     devStack: ["Next.js", "TypeScript", "CSS Module"],
     visualStack: ["Illustrator"],
+    poster: {
+      src: "/project/three-to-eighty.jpg",
+      width: 3333,
+      height: 1667,
+    },
     githubUrl: "https://github.com/yeoheung00/THREE_TO_EIGHTY_POPUP",
     demoUrl: "https://three-to-eighty-popup.vercel.app/",
     keyChallenge:
@@ -105,7 +127,35 @@ export const PROJECTS: Project[] = [
     domain: "Visual",
     devStack: ["Next.js", "TypeScript", "CSS Module"],
     visualStack: ["Illustrator"],
+    poster: {
+      src: "/project/interactive-poster.png",
+      width: 3644,
+      height: 2256,
+    },
     demoUrl: "https://2023-kosea-academic-conference.vercel.app/",
     githubUrl: "https://github.com/yeoheung00/segment-final",
+    keyChallenge: "파동이 발생하면 발생 원점을 기준으로 사방으로 연쇄적으로 퍼져나가게 하였습니다."
   },
+  {
+    id: "proj-7",
+    slug: "black-hole",
+    title: "블랙홀 시뮬레이션",
+    summary: "레이트레이싱을 활용한 중력렌즈 효과 구현",
+    description: "레이트레이싱의 원리를 이해하고, 물리법칙을 적용하여 중력에 의해 빛의 경로가 휘어지는 현상을 통해 블랙홀의 강착원반을 구현하였습니다. 각 픽셀에 해당하는 레이를 WebGPU를 통해 병렬연산하여 최적화된 렌더링을 구현하였습니다.",
+    period: "2026.09",
+    status: "Completed",
+    isFeatured: false,
+    order: 7,
+    domain: "Engineering",
+    devStack: ["Html", "TypeScript", "WebGPU"],
+    visualStack: [],
+    poster: {
+      src: "/project/black-hole.png",
+      width: 3644,
+      height: 2256,
+    },
+    demoUrl: "https://yeoheung00.github.io/black-hole/",
+    githubUrl: "https://github.com/yeoheung00/black-hole",
+    keyChallenge: "현실에서 광원에서 출발한 빛이 물체이 반사돼서 카메라로 돌아오는 방식이 아닌, 역으로 카메라에서 출발한 각 픽셀의 빛이 최종적으로 도달하는 지점의 데이터를 가져오는 방식으로 화면 크기만큼의 빛의 경로만 계산하여 최적화를 이루었습니다.",
+  }
 ];

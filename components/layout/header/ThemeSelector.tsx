@@ -1,3 +1,4 @@
+'use client';
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import {Light, Dark, System} from "@/components/icons";
