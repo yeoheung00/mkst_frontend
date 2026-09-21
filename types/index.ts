@@ -17,3 +17,18 @@ export type ApiResponse<T = unknown> = ApiSuccessResponse<T> | ApiErrorResponse;
 
 export * from './blog';
 export * from './project'
+export interface SearchResult {
+  slug: string;
+  title: string;
+  summary: string;
+  category: {
+    slug: string;
+    name: string;
+  }
+  createdAt: string;
+  updatedAt: string;
+  _count: {
+    likes: number;
+    comments: number;
+  }
+}

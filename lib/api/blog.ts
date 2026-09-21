@@ -1,4 +1,4 @@
-import { ApiResponse, Category, CreatePostInput, Post, PostSummary, ResCreatePost, Comment, CreateCommentInput, EditCommentInput, UploadedImage } from '@/types';
+import { ApiResponse, Category, CreatePostInput, Post, PostSummary, ResCreatePost, Comment, CreateCommentInput, EditCommentInput } from '@/types';
 
 export const getAllCategories = async (): Promise<ApiResponse<Category[]>> => {
   try {
@@ -70,7 +70,7 @@ export const createPost = async (post: CreatePostInput, token: string): Promise<
   }
 };
 
-export const editPost = async (postId: string, post: CreatePostInput, token: string): Promise<ApiResponse<ResCreatePost>> => {
+export const editPost = async (postId: number, post: CreatePostInput, token: string): Promise<ApiResponse<ResCreatePost>> => {
   try {
     console.log(postId);
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/posting/${postId}`, {
@@ -90,7 +90,7 @@ export const editPost = async (postId: string, post: CreatePostInput, token: str
   }
 };
 
-export const deletePost = async (postId: string, token: string): Promise<ApiResponse<{goto: string}>> => {
+export const deletePost = async (postId: number, token: string): Promise<ApiResponse<{goto: string}>> => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/posting/${postId}`, {
       method: "DELETE",
@@ -107,7 +107,7 @@ export const deletePost = async (postId: string, token: string): Promise<ApiResp
   }
 };
 
-export const getComments = async (postId: string): Promise<ApiResponse<Comment[]>> => {
+export const getComments = async (postId: number): Promise<ApiResponse<Comment[]>> => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/comments/${postId}`);
     if (!res.ok) return { success: false, error: `HTTP error! status: ${res.status}` };
@@ -130,7 +130,7 @@ export const createComment = async (comment: CreateCommentInput, token: string):
       body: JSON.stringify(comment),
     });
     if (!res.ok) return { success: false, error: `HTTP error! status: ${res.status}` };
-    const data: {id: string} = await res.json();
+    const data: {id: number} = await res.json();
     return { success: true, data: data.id };
   } catch (error) {
     console.error(error);
@@ -138,7 +138,7 @@ export const createComment = async (comment: CreateCommentInput, token: string):
   }
 }
 
-export const editComment = async (originId: string, comment: EditCommentInput, token: string): Promise<ApiResponse<void>> => {
+export const editComment = async (originId: number, comment: EditCommentInput, token: string): Promise<ApiResponse<void>> => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/comment/${originId}`, {
       method: "PATCH",
@@ -156,7 +156,7 @@ export const editComment = async (originId: string, comment: EditCommentInput, t
   }
 }
 
-export const deleteComment = async (commentId: string, token: string): Promise<ApiResponse<{ deletedIds: string[] }>> => {
+export const deleteComment = async (commentId: number, token: string): Promise<ApiResponse<{ deletedIds: number[] }>> => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/comment/${commentId}`, {
       method: "DELETE",
@@ -165,10 +165,26 @@ export const deleteComment = async (commentId: string, token: string): Promise<A
       },
     });
     if (!res.ok) return { success: false, error: `HTTP error! status: ${res.status}` };
-    const data: {deletedIds: string[]} = await res.json();
+    const data: {deletedIds: number[]} = await res.json();
     return { success: true, data };
   } catch (error) {
     console.error(error);
     return { success: false, error: "failed to delete comment." };
+  }
+}
+
+export const toggleLike = async (postId: number, token: string): Promise<ApiResponse<void>> => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/post/${postId}/like`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+    if (!res.ok) return { success: false, error: `HTTP error! status: ${res.status}` };
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: "failed to toggle like." };
   }
 }

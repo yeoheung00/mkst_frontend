@@ -1,6 +1,6 @@
 import Link from "next/link";
 import packageJson from "@/package.json";
-import ThemeSelector from "./header/ThemeSelector";
+import ThemeSelector from "./ThemeSelector";
 
 export default function Footer() {
   return (
@@ -56,7 +56,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 border-t border-border-default pt-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-2 border-t border-border-default pt-4 sm:flex-row items-center sm:justify-between">
           <p className="text-sub text-text-secondary">© 2026 민경원</p>
 
           <p className="text-sub text-text-secondary">Built with Next.js</p>

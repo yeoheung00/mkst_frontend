@@ -146,7 +146,6 @@ function BlogLinks({ initialCategories }: { initialCategories: Category[] }) {
   const [isDowned, setisDowned] = useState(true);
   const href = "/blog";
   const path = usePathname();
-  console.log("[asdf]", href, path);
   const isActive = path.startsWith("/blog");
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data } = useSWR(

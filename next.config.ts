@@ -19,10 +19,6 @@ const nextConfig: NextConfig = {
     dangerouslyAllowLocalIP: isDev,
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'lh3.googleusercontent.com', // 구글 프로필 이미지 도메인
-      },
-      {
         protocol: 'http',
         hostname: 'img1.kakaocdn.net',
       },
@@ -36,7 +32,10 @@ const nextConfig: NextConfig = {
         hostname: '127.0.0.1',
         port: '4000',
       },
-      // 필요에 따라 홈서버 도메인 추가
+      {
+        protocol: 'https',
+        hostname: 'api.mink-stud.io',
+      }
     ],
   },
 };

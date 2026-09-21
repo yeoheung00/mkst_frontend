@@ -25,7 +25,7 @@ function extractPlainText(node: unknown): string {
   return '';
 }
 
-export function getPostSummary(jsonContent: unknown, maxLength = 400): string {
+export function getPostSummary(jsonContent: unknown): string {
   if (!jsonContent) return '';
 
   let parsed: unknown = jsonContent;
@@ -41,9 +41,5 @@ export function getPostSummary(jsonContent: unknown, maxLength = 400): string {
   const rawText = extractPlainText(parsed);
   const cleanText = rawText.replace(/\s+/g, ' ').trim();
 
-  if (cleanText.length <= maxLength) {
-    return cleanText;
-  }
-
-  return cleanText.slice(0, maxLength) + '...';
+  return cleanText;
 }

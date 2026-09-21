@@ -8,12 +8,10 @@ export default function PostControl({
   token,
   postSlug,
   postId,
-  categorySlug,
 }: {
   token: string;
   postSlug: string;
-  postId: string;
-  categorySlug: string;
+  postId: number;
 }) {
   const handleEditPost = () => {
     redirect(`/blog/write/${postSlug}`);

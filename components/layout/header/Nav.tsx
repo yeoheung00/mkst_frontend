@@ -1,6 +1,6 @@
 'use client'
 
-import ThemeSelector from "./ThemeSelector"
+import ThemeSelector from "../footer/ThemeSelector"
 
 export default function Nav() {
   return (

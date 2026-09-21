@@ -9,14 +9,15 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { createComment, editComment } from "@/lib/api/blog";
 import { Comment, CreateCommentInput, EditCommentInput } from "@/types";
 import { signIn } from "next-auth/react";
+import crypto from "crypto"
 
 interface CommentFormProps {
   session: Session | null;
-  postId: string;
-  parentId: string | null;
+  postId: number;
+  parentId: number | null;
   onUpdateAction: Dispatch<SetStateAction<Comment[]>>;
   origin?: string;
-  originId?: string | null;
+  originId?: number | null;
   onClose?: () => void;
 }
 
@@ -70,7 +71,7 @@ export default function CommentForm({
       parentId,
     };
 
-    const clientId = crypto.randomUUID();
+    const clientId = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
 
     const optimisticComment: Comment = {
       id: clientId,
@@ -109,14 +110,14 @@ export default function CommentForm({
         comment.id === clientId
           ? {
               ...comment,
-              id: res.data as string,
+              id: res.data as number,
               status: "confirmed",
             }
           : comment,
       ),
     );
   };
-  const handleEditComment = async (session: Session, originId: string) => {
+  const handleEditComment = async (session: Session, originId: number) => {
     if (!session.accessToken) {
       alert("액세스 토큰 오류");
       return;

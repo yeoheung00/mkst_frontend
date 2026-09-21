@@ -1,5 +1,5 @@
 export interface Category {
-  id: string;
+  id: number;
   slug: string;
   name: string;
 }
@@ -18,7 +18,7 @@ export interface PostImage {
 }
 
 export interface PostSummary {
-  id: string;
+  id: number;
   slug: string;
   category: Category;
   title: string;
@@ -30,6 +30,10 @@ export interface PostSummary {
     likes: number;
     comments: number;
   }
+}
+
+export interface Like {
+  userId: string;
 }
 
 export interface TocItem {
@@ -54,7 +58,7 @@ export interface ResCreatePost {
 }
 
 export interface Post {
-  id: string;
+  id: number;
   author: {
     id: string;
     name: string;
@@ -65,18 +69,16 @@ export interface Post {
   toc: TocItem[];
   content: Record<string, unknown>;
   images: UploadedImage[];
+  likes: Like[];
   createdAt: string;
   updatedAt: string;
   comments: Comment[];
-  _count: {
-    likes: number;
-  }
 }
 
 export interface CreateCommentInput {
-  postId: string;
+  postId: number;
   content: string;
-  parentId: string | null;
+  parentId: number | null;
 }
 
 export interface EditCommentInput {
@@ -84,10 +86,10 @@ export interface EditCommentInput {
 }
 
 export interface Comment {
-  id: string;
+  id: number;
   status?: "pending" | "confirmed";
   content: string;
-  parentId: string | null;
+  parentId: number | null;
   deletedAt: string | null;
   createdAt: string;
   updatedAt: string;

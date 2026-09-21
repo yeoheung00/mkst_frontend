@@ -15,7 +15,7 @@ export default function CommentItem({
 }: {
   session: Session | null;
   comment: CommentWithReplies;
-  postId: string;
+  postId: number;
   onUpdateAction: Dispatch<SetStateAction<Comment[]>>;
 }) {
   const [reply, setReply] = useState(false);
