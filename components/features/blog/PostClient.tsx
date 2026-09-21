@@ -1,17 +1,13 @@
 "use client";
 
-import {
-  CategoryCombobox,
-  Category,
-} from "@/components/features/blog/CategoryCombobox";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import PostEditor, { PostEditorRef } from "./PostEditor";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { JSONContent } from "@tiptap/react";
 import { useRouter } from "next/navigation";
 import { Session } from "next-auth";
-import { CreatePostInput, Post, PostImage } from "@/types";
+import { CreatePostInput, Post, PostImage, Category } from "@/types";
 import { createPost, editPost } from "@/lib/api/blog";
 import { getPostSummary } from "@/lib/util";
 
@@ -134,11 +130,11 @@ export default function PostClient({
         <label htmlFor="category" className="text-xl font-bold">
           카테고리
         </label>
-        <CategoryCombobox
+        <Input
+          type="text"
           id="category"
-          categories={categories}
           value={categoryName}
-          onChange={(selectedId) => setCategoryName(selectedId)}
+          onChange={(e) => setCategoryName(e.target.value)}
         />
       </div>
       <div className="flex flex-col gap-2">
