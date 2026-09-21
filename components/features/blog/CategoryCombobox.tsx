@@ -1,11 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect, KeyboardEvent } from 'react';
+import { Category } from '@/types';
 
-export interface Category {
-  id: string;
-  name: string;
-}
 
 interface CategoryComboboxProps {
   id: string,
