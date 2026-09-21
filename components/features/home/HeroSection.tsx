@@ -64,17 +64,12 @@ class Point {
     if (!this.color || !this.activeColor) return;
     const distance = Math.sqrt((this.x - mx) ** 2 + (this.y - my) ** 2);
     const isEffective = distance < EFFECT_RADIUS * this.dpr;
-    const effectRatio = isEffective
-      ? 1 - distance / (EFFECT_RADIUS * this.dpr)
-      : 0;
+    const effectRatio = isEffective ? 1 - distance / (EFFECT_RADIUS * this.dpr) : 0;
     const SIZE = ((MAX_SIZE - BASE_SIZE) * effectRatio + BASE_SIZE) * this.dpr;
     if (isEffective) {
-      const r =
-        (this.activeColor.r - this.color.r) * effectRatio + this.color.r;
-      const g =
-        (this.activeColor.g - this.color.g) * effectRatio + this.color.g;
-      const b =
-        (this.activeColor.b - this.color.b) * effectRatio + this.color.b;
+      const r = (this.activeColor.r - this.color.r) * effectRatio + this.color.r;
+      const g = (this.activeColor.g - this.color.g) * effectRatio + this.color.g;
+      const b = (this.activeColor.b - this.color.b) * effectRatio + this.color.b;
       ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
     } else {
       ctx.fillStyle = `rgb(${this.color.r}, ${this.color.g}, ${this.color.b})`;
@@ -123,27 +118,18 @@ class Edge {
 
   draw(ctx: CanvasRenderingContext2D, mx: number, my: number) {
     if (!this.color || !this.activeColor) return;
-    const distanceP1 = Math.sqrt(
-      (this.point1.x - mx) ** 2 + (this.point1.y - my) ** 2,
-    );
-    const distanceP2 = Math.sqrt(
-      (this.point2.x - mx) ** 2 + (this.point2.y - my) ** 2,
-    );
+    const distanceP1 = Math.sqrt((this.point1.x - mx) ** 2 + (this.point1.y - my) ** 2);
+    const distanceP2 = Math.sqrt((this.point2.x - mx) ** 2 + (this.point2.y - my) ** 2);
     const isEffective =
-      distanceP1 < EFFECT_RADIUS * this.dpr ||
-      distanceP2 < EFFECT_RADIUS * this.dpr;
+      distanceP1 < EFFECT_RADIUS * this.dpr || distanceP2 < EFFECT_RADIUS * this.dpr;
     const effectRatio = isEffective
       ? 1 - Math.min(distanceP1, distanceP2) / (EFFECT_RADIUS * this.dpr)
       : 0;
-    const weight =
-      ((MAX_WEIGHT - BASE_WEIGHT) * effectRatio + BASE_WEIGHT) * this.dpr;
+    const weight = ((MAX_WEIGHT - BASE_WEIGHT) * effectRatio + BASE_WEIGHT) * this.dpr;
     if (isEffective) {
-      const r =
-        (this.activeColor.r - this.color.r) * effectRatio + this.color.r;
-      const g =
-        (this.activeColor.g - this.color.g) * effectRatio + this.color.g;
-      const b =
-        (this.activeColor.b - this.color.b) * effectRatio + this.color.b;
+      const r = (this.activeColor.r - this.color.r) * effectRatio + this.color.r;
+      const g = (this.activeColor.g - this.color.g) * effectRatio + this.color.g;
+      const b = (this.activeColor.b - this.color.b) * effectRatio + this.color.b;
       ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${this.opacity})`;
     } else {
       ctx.strokeStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.opacity})`;
@@ -186,17 +172,12 @@ class Face {
       distanceP2 < EFFECT_RADIUS * this.dpr ||
       distanceP3 < EFFECT_RADIUS * this.dpr;
     const effectiveRatio = isEffective
-      ? 1 -
-        Math.min(distanceP1, distanceP2, distanceP3) /
-          (EFFECT_RADIUS * this.dpr)
+      ? 1 - Math.min(distanceP1, distanceP2, distanceP3) / (EFFECT_RADIUS * this.dpr)
       : 0;
     if (isEffective) {
-      const r =
-        (this.activeColor.r - this.color.r) * effectiveRatio + this.color.r;
-      const g =
-        (this.activeColor.g - this.color.g) * effectiveRatio + this.color.g;
-      const b =
-        (this.activeColor.b - this.color.b) * effectiveRatio + this.color.b;
+      const r = (this.activeColor.r - this.color.r) * effectiveRatio + this.color.r;
+      const g = (this.activeColor.g - this.color.g) * effectiveRatio + this.color.g;
+      const b = (this.activeColor.b - this.color.b) * effectiveRatio + this.color.b;
       ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${this.opacity})`;
     } else {
       ctx.fillStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.opacity})`;
@@ -464,16 +445,11 @@ export default function HeroSection() {
               continue;
             }
 
-            const distance = Math.hypot(
-              point.x - otherPoint.x,
-              point.y - otherPoint.y,
-            );
+            const distance = Math.hypot(point.x - otherPoint.x, point.y - otherPoint.y);
             if (distance < NEIGHBOR_RADIUS * dpr) {
               let isCrossed = false;
               for (const edge of edges.current) {
-                if (
-                  isIntersecting(edge.point1, edge.point2, point, otherPoint)
-                ) {
+                if (isIntersecting(edge.point1, edge.point2, point, otherPoint)) {
                   isCrossed = true;
                   break;
                 }
@@ -517,8 +493,7 @@ export default function HeroSection() {
           if (p3 && p3.neighbors.some((n) => n.id === p1.id)) {
             const p3Neighbors = p3.neighbors;
             const p2IdxInP3 = p3Neighbors.findIndex((n) => n.id === p2.id);
-            const nextFromP3 =
-              p3Neighbors[(p2IdxInP3 + 1) % p3Neighbors.length];
+            const nextFromP3 = p3Neighbors[(p2IdxInP3 + 1) % p3Neighbors.length];
 
             if (nextFromP3.id === p1.id) {
               const ids = [p1.id, p2.id, p3.id].sort((a, b) => a - b);
@@ -604,10 +579,7 @@ export default function HeroSection() {
     currentPalette.current = BASE_PALETTE[resolvedTheme];
     currentActivePalette.current = ACTIVE_PALETTE[resolvedTheme];
     points.current.forEach((p) => {
-      p.setColor(
-        currentPalette.current.point,
-        currentActivePalette.current.point,
-      );
+      p.setColor(currentPalette.current.point, currentActivePalette.current.point);
     });
   }, [resolvedTheme]);
 
@@ -623,7 +595,7 @@ export default function HeroSection() {
         {/* 실험하고 */}
         <div ref={expRef} className="w-fit flex flex-col">
           <span
-            className={`w-fit text-5xl font-extrabold ${mode === "exp" ? "text-primary-base pl-4" : "pl-0"} transition-all duration-300`}
+            className={`w-fit text-hero font-extrabold ${mode === "exp" ? "text-primary-base pl-4" : "pl-0"} transition-all duration-300`}
           >
             실험하고
           </span>
@@ -651,7 +623,7 @@ export default function HeroSection() {
         {/* 개발하고 */}
         <div ref={codeRef} className="w-fit flex flex-col">
           <span
-            className={`w-fit text-5xl font-extrabold ${mode === "code" ? "text-primary-base pl-4" : "pl-0"} transition-all duration-300`}
+            className={`w-fit text-hero font-extrabold ${mode === "code" ? "text-primary-base pl-4" : "pl-0"} transition-all duration-300`}
           >
             개발하고
           </span>
@@ -678,7 +650,7 @@ export default function HeroSection() {
         {/* 기록하는 공간 */}
         <div ref={recordRef} className="w-fit flex flex-col">
           <span
-            className={`w-fit text-5xl font-extrabold ${mode === "record" ? "text-primary-base pl-4" : "pl-0"} transition-all duration-300`}
+            className={`w-fit text-hero font-extrabold ${mode === "record" ? "text-primary-base pl-4" : "pl-0"} transition-all duration-300`}
           >
             기록하는 공간
           </span>

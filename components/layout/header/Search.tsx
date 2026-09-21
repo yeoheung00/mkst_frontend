@@ -18,7 +18,7 @@ export default function Search({ onSearchAction }: {onSearchAction: () => void})
       <div className="w-8 h-8 shrink-0 flex items-center justify-center">
         <Magnifier className="w-6 h-6 sm:w-4 sm:h-4 text-text-primary sm:text-text-secondary" />
       </div>
-      <span className="px-2 text-text-secondary">{isMac ? "⌘" : "ctrl"} K</span>
+      <span className="px-2 text-text-secondary">{isMac ? "⌘" : "Ctrl"} K</span>
     </div>
   );
 }
