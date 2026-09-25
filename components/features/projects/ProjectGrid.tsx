@@ -17,10 +17,10 @@ export default function ProjectGrid({ projects, maxCols = 3 }: ProjectGridProps)
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   return (
-    <div className="space-y-6">
+    <>
       {/* Grid Container */}
       {projects.length > 0 ? (
-        <div className={`grid grid-cols-1 ${projects.length >= 2 && maxCols >= 2 && "lg:grid-cols-2"} ${projects.length >= 3 && maxCols >= 3 && "xl:grid-cols-3"} gap-4 xl:gap-6`}>
+        <div className={`grid grid-cols-1 ${projects.length >= 2 && maxCols >= 2 && "lg:grid-cols-2"} ${projects.length >= 3 && maxCols >= 3 && "xl:grid-cols-3"} gap-4`}>
           {projects.map((project, index) => (
             <ProjectCard
               key={index}
@@ -43,6 +43,6 @@ export default function ProjectGrid({ projects, maxCols = 3 }: ProjectGridProps)
         isOpen={selectedProject !== null}
         onClose={() => setSelectedProject(null)}
       />
-    </div>
+    </>
   );
 }

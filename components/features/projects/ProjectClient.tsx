@@ -15,8 +15,8 @@ export default function ProjectClient() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-row gap-4 items-baseline">
+      <div className="space-y-4">
+        <div className="flex gap-4 items-baseline">
           <h1 className="text-h1 font-semibold">Projects</h1>
           <span className="text-sub text-text-secondary">
             {projects.length} projects

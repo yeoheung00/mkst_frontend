@@ -6,6 +6,8 @@
  * 1. TAILWIND V4 THEME DEFINITION
  * ========================================== */
 @theme {
+    --breakpoint-3xl: 1920px;
+    --breakpoint-4k: 2560px;
     /* Surface Tokens */
     --color-surface-base: var(--surface-base);
     --color-surface-card: var(--surface-card);

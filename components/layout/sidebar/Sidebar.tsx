@@ -163,7 +163,7 @@ function BlogLinks({ initialCategories }: { initialCategories: Category[] }) {
       <Link
         href={`${href}/all`}
         onClick={() => setIsOpen(false)}
-        className={`w-full h-8 flex flex-row gap-2 items-center  hover:text-primary-base text-base rounded-md overflow-hidden ${path === href || (isActive && !isDowned) || (!isExpanded && isActive) ? "bg-surface-subest text-primary-base" : "text-text-primary"}`}
+        className={`w-full h-8 flex flex-row gap-2 items-center  hover:text-primary-base text-base rounded-md overflow-hidden ${path === `${href}/all` || (isActive && !isDowned) || (!isExpanded && isActive) ? "bg-surface-subest text-primary-base" : "text-text-primary"}`}
       >
         <div className="w-8 h-8 flex shrink-0 items-center justify-center">
           <FountationPen />
