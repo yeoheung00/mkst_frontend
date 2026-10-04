@@ -3,6 +3,7 @@ export * from './src/ArrowLeft';
 export * from './src/Book';
 export * from './src/Box';
 export * from './src/Comment';
+export * from './src/Copy';
 export * from './src/Dark';
 export * from './src/DirectionDown';
 export * from './src/Edit';
@@ -15,6 +16,7 @@ export * from './src/Layers'
 export * from './src/Light';
 export * from './src/Magnifier';
 export * from './src/Mail';
+export * from './src/Phone';
 export * from './src/QuillPen'
 export * from './src/Send'
 export * from './src/Signout'

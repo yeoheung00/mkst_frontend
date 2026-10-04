@@ -1,12 +1,6 @@
-import { Project } from "@/types/project";
+import { ProjectSummary } from "@/types/projects";
 
-export interface TechStat {
-  name: string;      // 기술 이름 (예: "Next.js")
-  count: number;     // 사용된 프로젝트 수
-  percentage: number; // 전체 대비 비율 (%)
-}
-
-export function getSortedProjects(projects: Project[]): Project[] {
+export function getSortedProjects(projects: ProjectSummary[]) {
   return [...projects].sort((a, b) => {
     // 1. isFeatured가 true인 프로젝트를 최상단으로
     if (a.isFeatured !== b.isFeatured) {

@@ -164,6 +164,14 @@
         scroll-behavior: smooth;
         color: var(--text-primary);
     }
+    .prose img{
+        width: 100% !important;
+        height: auto !important;
+        min-width: 0 !important;
+    }
+    .prose p {
+        word-break: break-word;
+    }
 }
 
 .mink-editor,

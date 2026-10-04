@@ -16,7 +16,8 @@ export type ApiErrorResponse = {
 export type ApiResponse<T = unknown> = ApiSuccessResponse<T> | ApiErrorResponse;
 
 export * from './blog';
-export * from './project'
+export * from './projects';
+
 export interface SearchResult {
   slug: string;
   title: string;

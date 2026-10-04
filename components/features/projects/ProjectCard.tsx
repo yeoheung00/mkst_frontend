@@ -3,50 +3,52 @@
 import { Button } from "@/components/ui/Button";
 import { LinkButton } from "@/components/ui/LinkButton";
 import Tag from "@/components/ui/Tag";
-import { Project } from "@/types/project";
+import { ProjectSummary } from "@/types/projects";
+import Link from "next/link";
 
 interface ProjectCardProps {
-  project: Project;
-  onClick: (project: Project) => void;
+  project: ProjectSummary;
 }
 
-export default function ProjectCard({ project, onClick }: ProjectCardProps) {
+export default function ProjectCard({ project }: ProjectCardProps) {
+  const devStack = project.devStack || [];
+  const visualStack = project.visualStack || [];
+  let cardDevStack = devStack;
+  let cardVisualStack = visualStack;
+  if (devStack.length + visualStack.length > 5) {
+    if(visualStack.length >= 2 && devStack.length >= 3) {
+      cardDevStack = devStack.slice(0, 3);
+      cardVisualStack = visualStack.slice(0, 2);
+    } else if(visualStack.length < 2) {
+      cardDevStack = devStack.slice(0, 5 - visualStack.length);
+      cardVisualStack = visualStack;
+    } else if(devStack.length < 3) {
+      cardDevStack = devStack;
+      cardVisualStack = visualStack.slice(0, 5 - devStack.length);
+    }
+  }
+  const overflowCount = devStack.length + visualStack.length - (cardDevStack.length + cardVisualStack.length);
   return (
     <div
-      onClick={() => onClick(project)}
-      tabIndex={0}
-      role="button"
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onClick(project);
-        }
-      }}
-      className="group relative flex flex-col justify-between gap-4 p-4 rounded-xl border border-border-default bg-surface-card cursor-pointer"
+      className="relative flex flex-col justify-between gap-4 p-4 rounded-xl border border-border-default bg-surface-card cursor-pointer"
     >
-      <div className="flex flex-col justify-between gap-4 flex-1">
+      <div className="relative flex flex-col justify-between gap-4 flex-1">
         <div className="flex flex-col gap-2">
 
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="text-sub">
-                {project.domain}
+          <div className="flex items-center gap-2">
+            {project.isFeatured && (
+              <span className="text-sub text-amber-300">
+                ★
               </span>
-              {project.isFeatured && (
-                <span className="text-sub text-amber-300">
-                  ★
-                </span>
-              )}
-            </div>
-
+            )}
             <span className="text-sub text-text-secondary">
               {project.period}
             </span>
           </div>
 
-          <h3 className="text-h3 group-hover:text-primary-base">
+          <Link href={`/projects/${project.slug}`} className="text-h3 hover:text-primary-base after:absolute after:inset-0">
             {project.title}
-          </h3>
+          </Link>
           <p className="text-sub text-text-secondary line-clamp-2">
             {project.summary}
           </p>
@@ -55,30 +57,30 @@ export default function ProjectCard({ project, onClick }: ProjectCardProps) {
 
         <div className="flex flex-wrap gap-1.5">
           {/* Dev Stack Badges */}
-          {project.devStack?.slice(0, 3).map((stack) => (
+          {cardDevStack.map((stack) => (
             <Tag key={stack} color="blue">
               {stack}
             </Tag>
           ))}
 
           {/* Visual Stack Badges */}
-          {project.visualStack?.slice(0, 2).map((stack) => (
+          {cardVisualStack.map((stack) => (
             <Tag key={stack} color="purple">
               {stack}
             </Tag>
           ))}
 
           {/* Overflow count if stacks are many */}
-          {project.devStack.length + project.visualStack.length > 5 && (
+          {overflowCount > 0 && (
             <span className="text-[11px] px-1.5 py-0.5 text-gray-400 font-mono">
-              +{project.devStack.length + project.visualStack.length - 5}
+              +{overflowCount}
             </span>
           )}
         </div>
 
       </div>
 
-      <div className="w-full flex gap-4 items-center">
+      <div className="w-full flex gap-4 items-center z-1">
         {project.demoUrl && (
           <LinkButton href={project.demoUrl} target="_blank" variant="primary" size="sm" className="flex-1" onClick={(e) => e.stopPropagation()}>
             Live Demo ↗

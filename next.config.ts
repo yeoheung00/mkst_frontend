@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
         destination: "/blog/write/new",
         permanent: true,
       },
+      {
+        source: "/projects/write",
+        destination: "/projects/write/new",
+        permanent: true,
+      },
     ];
   },
   images: {

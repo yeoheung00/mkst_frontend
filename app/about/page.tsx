@@ -1,20 +1,28 @@
 import {
   Book,
   Box,
+  Copy,
   Layers,
   Mail,
+  Phone,
   Sparkle,
   Work,
 } from "@/components/icons";
 import { LinkButton } from "@/components/ui/LinkButton";
 import Tag, { TagColor } from "@/components/ui/Tag";
 import Image from "next/image";
-import { PROJECTS } from "@/data/projects";
 import { getSortedProjects } from "@/lib/util";
-import ProjectGrid from "@/components/features/projects/ProjectGrid";
+import ProjectGrid from "@/components/features/projects/ProjectsGrid";
 import Link from "next/link";
+import { getProjects } from "@/lib/api/projects";
+import { Button } from "@/components/ui/Button";
+import Contact from "@/components/features/about/Contact";
 
-export default function About() {
+export default async function About() {
+  const projectsRes = await getProjects();
+  if (!projectsRes.success) return <div>Get projects error</div>
+  const projects = projectsRes.data;
+  const sortedProjects = getSortedProjects(projects).filter((project) => project.isFeatured);
   interface WhatIDoItem {
     title: string;
     description: string;
@@ -170,9 +178,6 @@ export default function About() {
     },
   ];
 
-  const projects = getSortedProjects(
-    PROJECTS.filter((project) => project.isFeatured),
-  );
   return (
     <div className="w-full max-w-4xl space-y-16 px-4 pt-8 lg:pt-16">
       {/* Profile summary */}
@@ -282,7 +287,7 @@ export default function About() {
           <Box />
           Featured Projects
         </SectionTitle>
-        <ProjectGrid projects={projects} maxCols={2} />
+        <ProjectGrid projects={sortedProjects} maxCols={2} />
         <p className="text-base mt-8 text-center">
           더 많은 프로젝트가 궁금하시다면
           <Link href="/projects" className="text-primary-base ml-2">
@@ -328,7 +333,7 @@ export default function About() {
           저의 이야기가 궁금하시다면
         </p>
         <div className="flex justify-start">
-          <LinkButton href="/blog/post/temp" variant="primary" size="md">
+          <LinkButton href="/blog/life-log/결국-무언가를-만드는-사람으로" variant="primary" size="md">
             Read More ↗
           </LinkButton>
         </div>
@@ -336,21 +341,13 @@ export default function About() {
 
       <div className="w-full h-px bg-border-default"></div>
 
-      <section className="space-y-4 flex flex-col items-center">
+      <section className="space-y-4 flex flex-col items-center ">
         <SectionTitle>함께 만들어보고 싶다면</SectionTitle>
-        <p className="text-base">
+        <p className="text-base text-center break-keep">
           웹 개발, 프로젝트, 협업과 관련된 이야기를 나누고 싶다면 편하게
           연락해주세요.
         </p>
-        <LinkButton
-          href="mailto:yeoheung27@naver.com"
-          tooltip="yeoheung27@naver.com"
-          variant="primary"
-          size="md"
-          leftIcon={<Mail />}
-        >
-          Get In Touch
-        </LinkButton>
+        <Contact />
       </section>
     </div>
   );

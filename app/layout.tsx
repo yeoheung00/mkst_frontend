@@ -38,7 +38,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           <Header/>
           <div className="w-full min-h-full grow flex flex-row">
             <Sidebar session={session} initialCategories={res.data} />
-            <main className="grow min-h-full flex flex-col items-center justify-between">
+            <main className="grow overflow-hidden min-h-full flex flex-col items-center justify-between">
               {children}
               <Footer/>
             </main>

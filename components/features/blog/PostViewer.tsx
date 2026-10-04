@@ -39,7 +39,7 @@ export default function PostViewer({ content }: { content: Post["content"] }) {
 
   return (
     <div
-      className="prose dark:prose-invert max-w-none pb-4 border-b border-border-default"
+      className="prose max-w-none pb-4 border-b border-border-default"
       dangerouslySetInnerHTML={{ __html: htmlContent }}
     />
   );
