@@ -35,44 +35,44 @@
     --color-primary-ring: var(--primary-ring);
     --color-on-primary: var(--on-primary);
 
-    --text-hero: clamp(3rem, 2rem + 2.5vw, 5rem);
-    --text-hero--line-height: 1.25;
-    --text-hero--font-weight: 700;
+    --text-hero: var(--font-hero-size);
+    --text-hero--line-height: var(--font-hero-line-height);
+    --text-hero--font-weight: var(--font-hero-weight);
 
-    /* H1: 모바일 최소 1.5rem(24px) ~ PC 최대 2rem(32px) */
-    --text-h1: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
-    --text-h1--line-height: 1.25;
-    --text-h1--font-weight: 700;
+    /* H1 */
+    --text-h1: var(--font-h1-size);
+    --text-h1--line-height: var(--font-h1-line-height);
+    --text-h1--font-weight: var(--font-h1-weight);
 
-    /* H2: 모바일 최소 1.25rem(20px) ~ PC 최대 1.5rem(24px) */
-    --text-h2: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
-    --text-h2--line-height: 1.33;
-    --text-h2--font-weight: 600;
+    /* H2 */
+    --text-h2: var(--font-h2-size);
+    --text-h2--line-height: var(--font-h2-line-height);
+    --text-h2--font-weight: var(--font-h2-weight);
 
-    /* H3: 모바일 최소 1.125rem(18px) ~ PC 최대 1.25rem(20px) */
-    --text-h3: clamp(1.125rem, 1rem + 0.4vw, 1.25rem);
-    --text-h3--line-height: 1.4;
-    --text-h3--font-weight: 600;
+    /* H3 */
+    --text-h3: var(--font-h3-size);
+    --text-h3--line-height: var(--font-h3-line-height);
+    --text-h3--font-weight: var(--font-h3-weight);
 
-    /* H4 (NEW): 본문 크기(16px)의 소제목/강조용 레벨 */
-    --text-h4: 1rem; /* 16px (Base와 동일) */
-    --text-h4--line-height: 1.5; /* 본문보다 살짝 쫀쫀한 행간 */
-    --text-h4--font-weight: 600; /* 본문(400) 대비 위계 확보 */
+    /* H4 */
+    --text-h4: var(--font-h4-size);
+    --text-h4--line-height: var(--font-h4-line-height);
+    --text-h4--font-weight: var(--font-h4-weight);
 
-    /* Base: 일반 본문, 설명글 */
-    --text-base: 1rem; /* 16px */
-    --text-base--line-height: 1.6;
-    --text-base--font-weight: 400;
+    /* Base */
+    --text-base: var(--font-base-size);
+    --text-base--line-height: var(--font-base-line-height);
+    --text-base--font-weight: var(--font-base-weight);
 
-    /* Sub: 서브 텍스트, 태그, 버튼 */
-    --text-sub: 0.75rem; /* 12px */
-    --text-sub--line-height: 1.5;
-    --text-sub--font-weight: 500;
+    /* Sub */
+    --text-sub: var(--font-sub-size);
+    --text-sub--line-height: var(--font-sub-line-height);
+    --text-sub--font-weight: var(--font-sub-weight);
 
-    /* Subest: 타임스탬프, 초소형 메타데이터 */
-    --text-subest: 0.625rem; /* 10px */
-    --text-subest--line-height: 1.4;
-    --text-subest--font-weight: 500;
+    /* Subest */
+    --text-subest: var(--font-subest-size);
+    --text-subest--line-height: var(--font-subest-line-height);
+    --text-subest--font-weight: var(--font-subest-weight);
 }
 
 /* ==========================================
@@ -80,10 +80,14 @@
  * ========================================== */
 :root {
     /* Surfaces (Solid) */
-    --surface-base: #f8fafc; /* slate-50 */
-    --surface-card: #ffffff; /* pure white */
-    --surface-sub: #f1f5f9; /* slate-100 */
-    --surface-subest: #e2e8f0; /* slate-200 */
+    --surface-base: #f8fafc;
+    /* slate-50 */
+    --surface-card: #ffffff;
+    /* pure white */
+    --surface-sub: #f1f5f9;
+    /* slate-100 */
+    --surface-subest: #e2e8f0;
+    /* slate-200 */
 
     /* Neutral Overlays (Alpha - slate-900 기반) */
     --border-default: rgba(15, 23, 42, 0.08);
@@ -98,14 +102,71 @@
     --text-muted: rgba(15, 23, 42, 0.4);
 
     /* Primary Accent (Blue) */
-    --primary-base: #2563eb; /* blue-600 */
-    --primary-hover: #1d4ed8; /* blue-700 */
-    --primary-active: #1e40af; /* blue-800 */
+    --primary-base: #2563eb;
+    /* blue-600 */
+    --primary-hover: #1d4ed8;
+    /* blue-700 */
+    --primary-active: #1e40af;
+    /* blue-800 */
     --on-primary: #ffffff;
 
     --primary-soft: rgba(37, 99, 235, 0.1);
     --primary-ring: rgba(37, 99, 235, 0.25);
+
+
+    /* --------------------------------------------------
+   * 원본 타이포그래피 토큰 정의
+   * -------------------------------------------------- */
+    /* Hero */
+    --font-hero-size: clamp(3rem, 2rem + 2.5vw, 5rem);
+    --font-hero-line-height: 1.25;
+    --font-hero-weight: 700;
+
+    /* H1: 모바일 최소 1.5rem(24px) ~ PC 최대 2rem(32px) */
+    --font-h1-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+    --font-h1-line-height: 1.25;
+    --font-h1-weight: 700;
+
+    /* H2: 모바일 최소 1.25rem(20px) ~ PC 최대 1.5rem(24px) */
+    --font-h2-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+    --font-h2-line-height: 1.33;
+    --font-h2-weight: 600;
+
+    /* H3: 모바일 최소 1.125rem(18px) ~ PC 최대 1.25rem(20px) */
+    --font-h3-size: clamp(1.125rem, 1rem + 0.4vw, 1.25rem);
+    --font-h3-line-height: 1.4;
+    --font-h3-weight: 600;
+
+    /* H4 (NEW): 본문 크기(16px)의 소제목/강조용 레벨 */
+    --font-h4-size: 1rem;
+    /* 16px (Base와 동일) */
+    --font-h4-line-height: 1.5;
+    /* 본문보다 살짝 쫀쫀한 행간 */
+    --font-h4-weight: 600;
+    /* 본문(400) 대비 위계 확보 */
+
+    /* Base: 일반 본문, 설명글 */
+    --font-base-size: 1rem;
+    /* 16px */
+    --font-base-line-height: 1.6;
+    --font-base-weight: 400;
+
+    /* Sub: 서브 텍스트, 태그, 버튼 */
+    --font-sub-size: 0.75rem;
+    /* 12px */
+    --font-sub-line-height: 1.5;
+    --font-sub-weight: 500;
+
+    /* Subest: 타임스탬프, 초소형 메타데이터 */
+    --font-subest-size: 0.625rem;
+    /* 10px */
+    --font-subest-line-height: 1.4;
+    --font-subest-weight: 500;
+
+
+
     @import "highlight.js/styles/github.css";
+
     .prose pre {
         background-color: var(--surface-subest);
         border-color: var(--border-default);
@@ -120,9 +181,12 @@
 .dark {
     /* Surfaces (Solid - 위로 떠오를수록 밝아짐) */
     --surface-base: #090d16;
-    --surface-card: #0f172a; /* slate-900 */
-    --surface-sub: #1e293b; /* slate-800 */
-    --surface-subest: #334155; /* slate-700 */
+    --surface-card: #0f172a;
+    /* slate-900 */
+    --surface-sub: #1e293b;
+    /* slate-800 */
+    --surface-subest: #334155;
+    /* slate-700 */
 
     /* Neutral Overlays (Alpha - white 기반) */
     --border-default: rgba(255, 255, 255, 0.1);
@@ -132,26 +196,26 @@
     --fill-pressed: rgba(255, 255, 255, 0.12);
 
     /* Typography */
-    --text-primary: #f8fafc; /* slate-50 */
+    --text-primary: #f8fafc;
+    /* slate-50 */
     --text-secondary: rgba(248, 250, 252, 0.65);
     --text-muted: rgba(248, 250, 252, 0.4);
 
     /* Primary Accent (Blue-500) */
-    --primary-base: #3b82f6; /* blue-500 */
-    --primary-hover: #60a5fa; /* blue-400 */
-    --primary-active: #2563eb; /* blue-600 */
+    --primary-base: #3b82f6;
+    /* blue-500 */
+    --primary-hover: #60a5fa;
+    /* blue-400 */
+    --primary-active: #2563eb;
+    /* blue-600 */
     --on-primary: #ffffff;
 
     --primary-soft: rgba(59, 130, 246, 0.15);
     --primary-ring: rgba(59, 130, 246, 0.4);
     @import "highlight.js/styles/github-dark.css";
-    .prose pre {
-        background-color: var(--surface-subest);
-        border-color: var(--border-default);
-        border-width: 1px;
-        color: var(--text-primary);
-    }
+
 }
+
 @layer base {
     * {
         box-sizing: border-box;
@@ -160,18 +224,48 @@
         transition-timing-function: ease-in-out;
         scroll-margin-top: 72px;
     }
+
     html {
         scroll-behavior: smooth;
         color: var(--text-primary);
     }
-    .prose img{
+
+    .post-viewer {
+        word-break: break-word;
+        color: var(--text-primary);
+    }
+
+    .post-viewer h2 {
+        font-size: var(--font-h2-size);
+        line-height: var(--font-h2-line-height);
+        font-weight: var(--font-h2-weight);
+    }
+
+    .post-viewer h3 {
+        font-size: var(--font-h3-size);
+        line-height: var(--font-h3-line-height);
+        font-weight: var(--font-h3-weight);
+    }
+
+    .post-viewer code {
+        background-color: var(--surface-subest);
+        font-family: var(--font-mono);
+        padding: 0.125rem 0.25rem;
+        border-radius: 0.25rem;
+    }
+
+    .post-viewer img {
         width: 100% !important;
         height: auto !important;
         min-width: 0 !important;
     }
-    .prose p {
-        word-break: break-word;
+    .post-viewer pre {
+        background-color: var(--surface-subest);
+        border-color: var(--border-default);
+        border-width: 1px;
+        color: var(--text-primary);
     }
+    
 }
 
 .mink-editor,
