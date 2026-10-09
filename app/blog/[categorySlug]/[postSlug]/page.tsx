@@ -22,6 +22,7 @@ export default async function BlogCategoryPost({ params }: Props) {
   const postRes = await getPost(postSlug);
   if (!postRes.success) return <div>Get post failed</div>;
   const post = postRes.data as Post;
+  console.log("post: ", JSON.stringify(post))
   return (
     <div className="w-full max-w-5xl space-y-4 p-4">
       {/* header */}

@@ -7,29 +7,17 @@ import {
   JSONContent,
 } from "@tiptap/react";
 import { Editor } from "@tiptap/core";
-import StarterKit from "@tiptap/starter-kit";
-import Link from "@tiptap/extension-link";
-import Image from "@tiptap/extension-image";
-import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
-import { createLowlight, common } from "lowlight";
 import {
   useRef,
   useState,
   useImperativeHandle,
   Ref,
-  useEffect,
   Dispatch,
   SetStateAction,
 } from "react";
 import { Post, UploadedImage } from "@/types";
 import { Session } from "next-auth";
-import {
-  HeadingIdExtension,
-  ImageClass,
-  LinkClass,
-  uploadAndInsertImage,
-} from "@/lib/util/editor";
-import { useConfirmExitForm } from "@/hooks/useConfirmExitForm";
+import { getEditorExtensions, uploadAndInsertImage } from "@/lib/util/editor";
 
 export interface PostEditorRef {
   getJSON: () => JSONContent;
@@ -40,49 +28,19 @@ export interface PostEditorRef {
 interface PostEditorProps {
   ref?: Ref<PostEditorRef>;
   post: Post | null;
-  initialContent?: string;
   session: Session | null;
 }
 
-export default function PostEditor({
-  ref,
-  post,
-  initialContent = "",
-  session,
-}: PostEditorProps) {
+export default function PostEditor({ ref, post, session }: PostEditorProps) {
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>(
     post ? post.images : [],
   );
 
   const editor = useEditor({
-    extensions: [
-      StarterKit.configure({
-        heading: {
-          levels: [2, 3],
-        },
-        codeBlock: false,
-        link: false,
-      }),
-      HeadingIdExtension,
-      Link.configure({
-        openOnClick: false,
-        HTMLAttributes: {
-          class: LinkClass,
-        },
-      }),
-      Image.configure({
-        HTMLAttributes: {
-          class: ImageClass,
-        },
-      }),
-      CodeBlockLowlight.configure({
-        lowlight: createLowlight(common),
-      }),
-    ],
+    extensions: getEditorExtensions(),
     editorProps: {
       attributes: {
-        class:
-          "focus:outline-none max-w-none prose dark:prose-invert p-4 min-h-[350px]",
+        class: "doc-viewer focus:outline-none max-w-none p-4 min-h-[350px]",
       },
       handleDrop: (view, event, _slice, moved) => {
         if (!moved && event.dataTransfer?.files?.[0]) {
@@ -139,7 +97,7 @@ export default function PostEditor({
         return false;
       },
     },
-    content: initialContent,
+    content: post?.content,
     immediatelyRender: false,
   });
 
@@ -149,23 +107,18 @@ export default function PostEditor({
     clear: () => editor?.commands.clearContent(),
   }));
 
-  useEffect(() => {
-    if (!editor || !post) return;
-    editor.commands.setContent(post.content);
-  }, [editor, post]);
-
   return (
     <div className="mink-editor flex flex-col w-full h-full border border-border-default rounded-lg">
       {/* 🛠️ 툴바 */}
       {editor ? (
-        <>
+        <div className="">
           <Toolbar
             session={session}
             editor={editor}
             onUploadAction={setUploadedImages}
           />
           <EditorContent editor={editor} />
-        </>
+        </div>
       ) : (
         <div className="flex items-center justify-center w-full h-80 border rounded-lg text-slate-400">
           에디터를 불러오는 중입니다...

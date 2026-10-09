@@ -1,3 +1,5 @@
+import { JSONContent } from "@tiptap/react";
+
 export interface Category {
   id: number;
   slug: string;
@@ -67,7 +69,7 @@ export interface Post {
   category: { name: string };
   title: string;
   toc: TocItem[];
-  content: Record<string, unknown>;
+  content: JSONContent;
   images: UploadedImage[];
   likes: Like[];
   createdAt: string;
