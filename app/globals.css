@@ -113,7 +113,6 @@
     --primary-soft: rgba(37, 99, 235, 0.1);
     --primary-ring: rgba(37, 99, 235, 0.25);
 
-
     /* --------------------------------------------------
    * 원본 타이포그래피 토큰 정의
    * -------------------------------------------------- */
@@ -226,9 +225,9 @@
        ========================================================================== */
 
     .doc-viewer {
-      word-break: break-word;
-      color: var(--text-primary);
-      line-height: 1.75;
+        word-break: break-word;
+        color: var(--text-primary);
+        line-height: 1.75;
     }
 
     /* 1. 블록 간 기본 하단 여백 */
@@ -237,158 +236,161 @@
     .doc-viewer ol,
     .doc-viewer blockquote,
     .doc-viewer div[data-node="code-block"] {
-      margin-bottom: 1rem;
+        margin-bottom: 1rem;
     }
 
     /* 2. 제목 (Heading) - 상단 호흡 확보 */
     .doc-viewer h2 {
-      font-size: var(--font-h2-size);
-      line-height: var(--font-h2-line-height);
-      font-weight: var(--font-h2-weight);
-      margin-top: 2rem;
-      margin-bottom: 0.75rem;
+        font-size: var(--font-h2-size);
+        line-height: var(--font-h2-line-height);
+        font-weight: var(--font-h2-weight);
+        margin-top: 2rem;
+        margin-bottom: 0.75rem;
     }
 
     .doc-viewer h3 {
-      font-size: var(--font-h3-size);
-      line-height: var(--font-h3-line-height);
-      font-weight: var(--font-h3-weight);
-      margin-top: 1.5rem;
-      margin-bottom: 0.5rem;
+        font-size: var(--font-h3-size);
+        line-height: var(--font-h3-line-height);
+        font-weight: var(--font-h3-weight);
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
     }
 
     /* 첫 번째 블록이 제목일 경우 상단 공백 제거 */
     .doc-viewer > :first-child,
     .doc-viewer .tiptap > :first-child {
-      margin-top: 0;
+        margin-top: 0;
     }
 
     /* 3. 링크 (Link) */
     .doc-viewer a {
-      color: var(--primary-base);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      transition: opacity 0.15s ease;
+        color: var(--primary-base);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        transition: opacity 0.15s ease;
     }
 
     .doc-viewer a:hover {
-      opacity: 0.8;
+        opacity: 0.8;
     }
 
     /* 4. 리스트 (Unordered & Ordered Lists) */
     .doc-viewer ul {
-      list-style-type: disc;
-      list-style-position: outside;
-      padding-left: 1.5rem;
+        list-style-type: disc;
+        list-style-position: outside;
+        padding-left: 1.5rem;
     }
 
     .doc-viewer ol {
-      list-style-type: decimal;
-      list-style-position: outside;
-      padding-left: 1.5rem;
+        list-style-type: decimal;
+        list-style-position: outside;
+        padding-left: 1.5rem;
     }
 
     .doc-viewer li {
-      margin-bottom: 0.25rem;
-      padding-left: 0.25rem;
+        margin-bottom: 0.25rem;
+        padding-left: 0.25rem;
     }
 
     /* 중첩 리스트 (Nested Lists) */
     .doc-viewer ul ul {
-      list-style-type: circle;
-      margin-top: 0.25rem;
-      margin-bottom: 0.25rem;
+        list-style-type: circle;
+        margin-top: 0.25rem;
+        margin-bottom: 0.25rem;
     }
 
     .doc-viewer ol ol,
     .doc-viewer ul ol {
-      list-style-type: lower-latin;
-      margin-top: 0.25rem;
-      margin-bottom: 0.25rem;
+        list-style-type: lower-latin;
+        margin-top: 0.25rem;
+        margin-bottom: 0.25rem;
     }
 
     /* TipTap 내부 li > p 구조 여백 상쇄 */
     .doc-viewer li > p {
-      margin-bottom: 0 !important;
-      display: inline;
+        margin-bottom: 0 !important;
+        display: inline;
     }
 
     /* 5. 구분선 (Horizontal Rule) */
     .doc-viewer hr {
-      border: none;
-      border-top: 1px solid var(--border-default);
-      margin: 2.5rem 0;
+        border: none;
+        border-top: 1px solid var(--border-default);
+        margin: 2.5rem 0;
     }
 
     /* 6. 이미지 (Image) */
     .doc-viewer img {
-      display: block;
-      width: 100% !important;
-      height: auto !important;
-      min-width: 0 !important;
-      border-radius: 1rem;
-      border: 1px solid var(--border-default);
-      margin-top: 1.5rem;
-      margin-bottom: 1.5rem;
+        display: block;
+        width: 100% !important;
+        height: auto !important;
+        min-width: 0 !important;
+        border-radius: 1rem;
+        border: 1px solid var(--border-default);
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
     }
 
     /* 7. 인라인 코드 (Inline Code) */
-    .doc-viewer code {
-      font-family: var(--font-mono, monospace);
-      font-size: 0.875em;
-      background-color: var(--surface-subest);
-      border: 1px solid var(--border-default);
-      border-radius: 4px;
-      padding: 0.15rem 0.35rem;
-      vertical-align: baseline;
+    .doc-viewer :not(pre) > code {
+        font-family: var(--font-mono, monospace);
+        font-size: 0.875em;
+        background-color: var(--surface-sub);
+        border: 1px solid var(--border-default);
+        border-radius: 4px;
+        padding: 0.15rem 0.35rem;
+        vertical-align: baseline;
     }
 
     /* 8. 코드 블록 컨테이너 (Code Block Container) */
     .doc-viewer div[data-node="code-block"] {
-      background-color: var(--surface-sub);
-      border: 1px solid var(--border-default);
-      border-radius: 1rem;
-      overflow: hidden;
-      margin-top: 1.5rem;
-      margin-bottom: 1.5rem;
+        background-color: var(--surface-sub);
+        border: 1px solid var(--border-default);
+        border-radius: 1rem;
+        overflow: hidden;
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+        width: 100%;
     }
 
     .doc-viewer div[data-node="code-block"] pre {
-      margin: 0;
-      padding: 0;
-      background-color: transparent;
-      overflow-x: auto;
+        margin: 0;
+        padding: 0;
+        background-color: transparent;
+        overflow-x: auto;
     }
 
     /* 코드 블록 내부의 code: 인라인 스타일 강제 리셋 및 패딩 부여 */
-    .doc-viewer div[data-node="code-block"] [data-node="code"] {
-      display: block;
-      padding: 1rem !important;
-      background-color: transparent !important;
-      border: none !important;
-      border-radius: 0 !important;
-      font-size: 0.875rem;
-      line-height: 1.6;
+    .doc-viewer div[data-node="code-block"] pre > code,
+    .doc-viewer div[data-node="code-block"] pre > div {
+        width: fit-content;
+        display: block;
+        padding: 1rem !important;
+        background-color: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        font-size: 0.875rem;
+        line-height: 1.6;
     }
 
     .doc-viewer blockquote {
-      position: relative;
-      margin: 1.5rem 0;
-      padding: 0.75rem 1.25rem;
-      border-left: 4px solid var(--primary-base, #3b82f6);
-      background-color: var(--surface-subest);
-      border-radius: 0 0.5rem 0.5rem 0;
+        position: relative;
+        margin: 1.5rem 0;
+        padding: 0.75rem 1.25rem;
+        border-left: 4px solid var(--primary-base, #3b82f6);
+        background-color: var(--surface-subest);
+        border-radius: 0 0.5rem 0.5rem 0;
     }
 
     /* blockquote 내부의 문단 간격 조정 */
     .doc-viewer blockquote p {
-      margin-bottom: 0.5rem;
-      line-height: 1.7;
+        margin-bottom: 0.5rem;
+        line-height: 1.7;
     }
 
     /* 마지막 문단의 하단 여백은 제거해 패딩 밸런스 유지 */
     .doc-viewer blockquote p:last-child {
-      margin-bottom: 0;
+        margin-bottom: 0;
     }
 }
 

@@ -59,7 +59,7 @@ export default async function BlogCategoryPost({ params }: Props) {
 
       <div className="w-full flex flex-row items-stretch justify-center gap-4">
         {/* post content */}
-        <div className="grow overflow-hidden space-y-4 py-4">
+        <div className="grow overflow-hidden space-y-4">
           {/* content */}
           <PostViewer content={post.content} />
 
