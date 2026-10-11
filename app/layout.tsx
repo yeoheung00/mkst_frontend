@@ -5,7 +5,6 @@ import Provider from "@/context/Provider";
 import Header from "@/components/layout/header/Header";
 import Sidebar from "@/components/layout/sidebar/Sidebar";
 import { getAllCategories } from "@/lib/api/blog";
-import { auth } from "@/auth";
 import Footer from "@/components/layout/footer/Footer";
 
 const geistSans = Geist({
@@ -24,9 +23,8 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const session = await auth();
-  const res = await getAllCategories();
-  if (!res.success) return <div>Fail to get all categories (layout.tsx)</div>
+  //const res = await getAllCategories();
+  //if (!res.success) return <div>Fail to get all categories (layout.tsx)</div>
   return (
     <html
       suppressHydrationWarning
@@ -37,7 +35,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <Provider>
           <Header/>
           <div className="w-full min-h-full grow flex flex-row">
-            <Sidebar session={session} initialCategories={res.data} />
+            <Sidebar initialCategories={[]} />
             <main className="grow overflow-hidden min-h-full flex flex-col items-center justify-between">
               {children}
               <Footer/>
