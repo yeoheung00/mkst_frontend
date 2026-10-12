@@ -1,14 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/Button";
-import { useSidebar } from "@/context/SidebarProvider";
+import { useSidebar } from "@/context/SidebarContext";
 import { Category } from "@/types/blog";
-import { Session } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
-import { signIn, signOut } from "next-auth/react";
 import {
   About,
   Box,
@@ -17,13 +15,14 @@ import {
   User,
   Signout,
 } from "@/components/icons";
+import { handleKakaoLogin } from "@/lib/util/auth";
+import { useAuth } from "@/context/AuthContext";
 
 interface Props {
-  session: Session | null;
   initialCategories: Category[];
 }
 
-export default function Sidebar({ session, initialCategories }: Props) {
+export default function Sidebar({ initialCategories }: Props) {
   const { isOpen, isExpanded } = useSidebar();
   const path = usePathname();
   return (
@@ -48,7 +47,7 @@ export default function Sidebar({ session, initialCategories }: Props) {
     >
       <div className="w-full min-h-full flex flex-col md:flex-col-reverse md:justify-between">
         <span className="hidden md:block absolute right-0 h-full w-px bg-border-default"></span>
-        <UserLink session={session} />
+        <UserLink />
         <div className="flex flex-col md:gap-2 p-4">
           <LinkItem href="/about" value="About">
             <About />
@@ -63,15 +62,16 @@ export default function Sidebar({ session, initialCategories }: Props) {
   );
 }
 
-function UserLink({ session }: { session: Session | null }) {
+function UserLink() {
+  const { user, logout } = useAuth();
   const { isExpanded } = useSidebar();
   return (
     <div className="w-full h-16 p-4 flex flex-row gap-2 items-center justify-between overflow-hidden">
       <Link href="/user" className="group flex flex-row items-center gap-2">
         <div className="w-8 h-8 shrink-0 border border-border-default bg-surface-subest rounded-full overflow-hidden flex items-center justify-center">
-          {session ? (
+          {user ? (
             <Image
-              src={session.user.image ?? ""}
+              src={user.image ?? ""}
               width={32}
               height={32}
               sizes="32px"
@@ -84,15 +84,15 @@ function UserLink({ session }: { session: Session | null }) {
         <span
           className={`shrink-0 group-hover:underline grow text-base ${isExpanded ? "opacity-100" : "opacity-0"} transition-opacity duration-300 ease-in-out`}
         >
-          {session ? (session.user.name ?? "") : ""}
+          {user ? (user.name ?? "") : ""}
         </span>
       </Link>
       <div
         className={`${isExpanded ? "opacity-100" : "opacity-0"} transition-opacity duration-300 ease-in-out`}
       >
-        {session ? (
+        {user ? (
           <Button
-            onClick={() => signOut()}
+            onClick={() => logout()}
             variant="ghost"
             className="rounded-md w-8 h-8"
           >
@@ -101,7 +101,7 @@ function UserLink({ session }: { session: Session | null }) {
         ) : (
             <div className="flex gap-2">
               <Button
-                onClick={() => signIn("kakao")}
+                onClick={handleKakaoLogin}
                 variant="secondary"
                 size="sm"
               >
@@ -149,7 +149,7 @@ function BlogLinks({ initialCategories }: { initialCategories: Category[] }) {
   const isActive = path.startsWith("/blog");
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/blog/categories`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/blog/categories`,
     fetcher,
     {
       fallbackData: initialCategories,

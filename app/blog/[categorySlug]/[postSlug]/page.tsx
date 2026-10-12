@@ -5,7 +5,6 @@ import CommentSection from "@/components/features/blog/CommentSection";
 import { getPost } from "@/lib/api/blog";
 import { TocItem, Post } from "@/types";
 import { Suspense } from "react";
-import { auth } from "@/auth";
 import PostControl from "@/components/features/blog/PostControl";
 import ScrollController from "@/components/features/blog/ScrollController";
 
@@ -17,12 +16,10 @@ interface Props {
 }
 
 export default async function BlogCategoryPost({ params }: Props) {
-  const session = await auth();
   const { categorySlug, postSlug } = await params;
   const postRes = await getPost(postSlug);
   if (!postRes.success) return <div>Get post failed</div>;
   const post = postRes.data as Post;
-  console.log("post: ", JSON.stringify(post))
   return (
     <div className="w-full max-w-5xl space-y-4 p-4">
       {/* header */}
@@ -45,15 +42,7 @@ export default async function BlogCategoryPost({ params }: Props) {
                 ` (수정 ${formatRelativeDate(post.updatedAt)})`}
             </span>
           </div>
-          {session &&
-            post.author.id === session.user.id &&
-            session.accessToken && (
-              <PostControl
-                token={session.accessToken}
-                postSlug={postSlug}
-                postId={post.id}
-              />
-            )}
+          <PostControl postSlug={postSlug} postId={post.id} authorId={post.author.id} />
         </div>
       </div>
 
@@ -100,7 +89,7 @@ function Toc({ toc }: { toc: TocItem[] }) {
         ))}
       </div>
 
-      <ScrollController/>
+      <ScrollController />
     </div>
   );
 }

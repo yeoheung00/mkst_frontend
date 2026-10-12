@@ -16,8 +16,8 @@ import {
   SetStateAction,
 } from "react";
 import { Post, UploadedImage } from "@/types";
-import { Session } from "next-auth";
 import { getEditorExtensions, uploadAndInsertImage } from "@/lib/util/editor";
+import { uploadImageFile } from "@/lib/api/upload";
 
 export interface PostEditorRef {
   getJSON: () => JSONContent;
@@ -28,13 +28,13 @@ export interface PostEditorRef {
 interface PostEditorProps {
   ref?: Ref<PostEditorRef>;
   post: Post | null;
-  session: Session | null;
 }
 
-export default function PostEditor({ ref, post, session }: PostEditorProps) {
+export default function PostEditor({ ref, post }: PostEditorProps) {
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>(
     post ? post.images : [],
   );
+  console.log(uploadedImages);
 
   const editor = useEditor({
     extensions: getEditorExtensions(),
@@ -51,7 +51,6 @@ export default function PostEditor({ ref, post, session }: PostEditorProps) {
 
             void (async () => {
               const imageRes = await uploadAndInsertImage(
-                session,
                 editor,
                 file,
                 view,
@@ -80,7 +79,6 @@ export default function PostEditor({ ref, post, session }: PostEditorProps) {
               event.preventDefault();
               void (async () => {
                 const imageRes = await uploadAndInsertImage(
-                  session,
                   editor,
                   file,
                 );
@@ -111,9 +109,8 @@ export default function PostEditor({ ref, post, session }: PostEditorProps) {
     <div className="mink-editor flex flex-col w-full h-full border border-border-default rounded-lg">
       {/* 🛠️ 툴바 */}
       {editor ? (
-        <div className="">
+        <div className="relative">
           <Toolbar
-            session={session}
             editor={editor}
             onUploadAction={setUploadedImages}
           />
@@ -129,11 +126,9 @@ export default function PostEditor({ ref, post, session }: PostEditorProps) {
 }
 
 function Toolbar({
-  session,
   editor,
   onUploadAction,
 }: {
-  session: Session | null;
   editor: Editor;
   onUploadAction: Dispatch<SetStateAction<UploadedImage[]>>;
 }) {
@@ -141,7 +136,7 @@ function Toolbar({
     const file = e.target.files?.[0];
     if (!file || !editor) return;
 
-    const imageRes = await uploadAndInsertImage(session, editor, file);
+    const imageRes = await uploadAndInsertImage(editor, file);
     if (!imageRes.success) return;
     const imageData = imageRes.data;
     if (imageData) {

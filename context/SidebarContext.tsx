@@ -11,7 +11,7 @@ interface SidebarContextType {
 
 const SidebarContext = createContext<SidebarContextType | null>(null);
 
-export default function SidebarProvider({children}: {children: React.ReactNode}) {
+export const SidebarProvider = ({children}: {children: React.ReactNode}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
 

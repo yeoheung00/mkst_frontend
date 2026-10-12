@@ -15,7 +15,7 @@ export default function ProjectsGrid({ projects, maxCols = 3 }: ProjectGridProps
     </div>
   );
   return (
-    <div className={`grid grid-cols-1 ${projects.length >= 2 && maxCols >= 2 && "lg:grid-cols-2"} ${projects.length >= 3 && maxCols >= 3 && "xl:grid-cols-3"} gap-4`}>
+    <div className={`grid gap-4 grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4`}>
       {projects.map((project, index) => (
         <ProjectCard
           key={index}

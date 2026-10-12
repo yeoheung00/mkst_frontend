@@ -1,9 +1,11 @@
+import { fetchClient } from './client';
 import { ApiResponse, Category, CreatePostInput, Post, PostSummary, ResCreatePost, Comment, CreateCommentInput, EditCommentInput } from '@/types';
 
 export const getAllCategories = async (): Promise<ApiResponse<Category[]>> => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/categories`, {
+    const res = await fetchClient(`/api/blog/categories`, {
       cache: 'no-store',
+      skipAuth: true,
     });
     if (!res.ok)return { success: false, error: `HTTP error! status: ${res.status}` };
     const data: Category[] = await res.json();
@@ -17,7 +19,7 @@ export const getAllCategories = async (): Promise<ApiResponse<Category[]>> => {
 
 export const getCategoryBySlug = async (categorySlug: string): Promise<ApiResponse<Category>> => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/category/${categorySlug}`);
+    const res = await fetchClient(`/api/blog/category/${categorySlug}`, {skipAuth: true});
     if (!res.ok) return { success: false, error: `HTTP error! status: ${res.status}` };
     const data: Category = await res.json();
     return { success: true, data };
@@ -29,7 +31,7 @@ export const getCategoryBySlug = async (categorySlug: string): Promise<ApiRespon
 
 export const getPosts = async (categorySlug?: string): Promise<ApiResponse<PostSummary[]>> => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/posts?categorySlug=${categorySlug ? categorySlug : "all"}`);
+    const res = await fetchClient(`/api/blog/posts?categorySlug=${categorySlug ? categorySlug : "all"}`, {skipAuth: true});
     if (!res.ok) return { success: false, error: `HTTP error! status: ${res.status}` };
     const data: PostSummary[] = await res.json();
     return { success: true, data };
@@ -41,7 +43,7 @@ export const getPosts = async (categorySlug?: string): Promise<ApiResponse<PostS
 
 export const getPost = async (postSlug: string): Promise<ApiResponse<Post>> => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/post/${postSlug}`);
+    const res = await fetchClient(`/api/blog/post/${postSlug}`, {skipAuth: true});
     if (!res.ok) return { success: false, error: `HTTP error! status: ${res.status}` };
     const data: Post = await res.json();
     return { success: true, data };
@@ -51,12 +53,11 @@ export const getPost = async (postSlug: string): Promise<ApiResponse<Post>> => {
   }
 }
 
-export const createPost = async (post: CreatePostInput, token: string): Promise<ApiResponse<ResCreatePost>> => {
+export const createPost = async (post: CreatePostInput): Promise<ApiResponse<ResCreatePost>> => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/posting`, {
+    const res = await fetchClient(`/api/blog/posting`, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(post),
@@ -70,13 +71,12 @@ export const createPost = async (post: CreatePostInput, token: string): Promise<
   }
 };
 
-export const editPost = async (postId: number, post: CreatePostInput, token: string): Promise<ApiResponse<ResCreatePost>> => {
+export const editPost = async (postId: number, post: CreatePostInput): Promise<ApiResponse<ResCreatePost>> => {
   try {
     console.log(postId);
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/posting/${postId}`, {
+    const res = await fetchClient(`/api/blog/posting/${postId}`, {
       method: "PATCH",
       headers: {
-        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(post),
@@ -90,13 +90,10 @@ export const editPost = async (postId: number, post: CreatePostInput, token: str
   }
 };
 
-export const deletePost = async (postId: number, token: string): Promise<ApiResponse<{goto: string}>> => {
+export const deletePost = async (postId: number): Promise<ApiResponse<{goto: string}>> => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/posting/${postId}`, {
+    const res = await fetchClient(`/api/blog/posting/${postId}`, {
       method: "DELETE",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
     });
     if (!res.ok) return { success: false, error: `HTTP error! status: ${res.status}` };
     const data = await res.json();
@@ -109,7 +106,7 @@ export const deletePost = async (postId: number, token: string): Promise<ApiResp
 
 export const getComments = async (postId: number): Promise<ApiResponse<Comment[]>> => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/comments/${postId}`);
+    const res = await fetchClient(`/api/blog/comments/${postId}`, {skipAuth: true});
     if (!res.ok) return { success: false, error: `HTTP error! status: ${res.status}` };
     const data: Comment[] = await res.json();
     return { success: true, data };
@@ -119,12 +116,11 @@ export const getComments = async (postId: number): Promise<ApiResponse<Comment[]
   }
 }
 
-export const createComment = async (comment: CreateCommentInput, token: string): Promise<ApiResponse> => {
+export const createComment = async (comment: CreateCommentInput): Promise<ApiResponse> => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/comment`, {
+    const res = await fetchClient(`/api/blog/comment`, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(comment),
@@ -138,12 +134,11 @@ export const createComment = async (comment: CreateCommentInput, token: string):
   }
 }
 
-export const editComment = async (originId: number, comment: EditCommentInput, token: string): Promise<ApiResponse<void>> => {
+export const editComment = async (originId: number, comment: EditCommentInput): Promise<ApiResponse<void>> => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/comment/${originId}`, {
+    const res = await fetchClient(`/api/blog/comment/${originId}`, {
       method: "PATCH",
       headers: {
-        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(comment),
@@ -156,13 +151,10 @@ export const editComment = async (originId: number, comment: EditCommentInput, t
   }
 }
 
-export const deleteComment = async (commentId: number, token: string): Promise<ApiResponse<{ deletedIds: number[] }>> => {
+export const deleteComment = async (commentId: number): Promise<ApiResponse<{ deletedIds: number[] }>> => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/comment/${commentId}`, {
+    const res = await fetchClient(`/api/blog/comment/${commentId}`, {
       method: "DELETE",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
     });
     if (!res.ok) return { success: false, error: `HTTP error! status: ${res.status}` };
     const data: {deletedIds: number[]} = await res.json();
@@ -173,13 +165,10 @@ export const deleteComment = async (commentId: number, token: string): Promise<A
   }
 }
 
-export const toggleLike = async (postId: number, token: string): Promise<ApiResponse<void>> => {
+export const toggleLike = async (postId: number): Promise<ApiResponse<void>> => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog/post/${postId}/like`, {
+    const res = await fetchClient(`/api/blog/post/${postId}/like`, {
       method: "POST",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
     });
     if (!res.ok) return { success: false, error: `HTTP error! status: ${res.status}` };
     return { success: true };

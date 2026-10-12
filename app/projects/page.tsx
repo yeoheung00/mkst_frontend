@@ -1,17 +1,14 @@
-import { auth } from "@/auth";
+import { RoleGate } from "@/components/auth/RoleGate";
 import ProjectGrid from "@/components/features/projects/ProjectsGrid";
 import { LinkButton } from "@/components/ui/LinkButton";
-import { getRole } from "@/lib/api/auth";
 import { getProjects } from "@/lib/api/projects";
 import { getSortedProjects } from "@/lib/util/project";
 
 export default async function Projects() {
   const projectsRes = await getProjects();
-  if (!projectsRes.success) return <div>Get projects error</div>
+  if (!projectsRes.success) return <div>Get projects error</div>;
   const projects = projectsRes.data;
   const sortedProjects = getSortedProjects(projects);
-  const session = await auth();
-  const role = await getRole(session);
   return (
     <div className="w-full p-4 space-y-6">
       <div className="flex justify-between">
@@ -21,12 +18,14 @@ export default async function Projects() {
             {projects.length} projects
           </span>
         </div>
-        {session && role === "ADMIN" && <LinkButton href="/projects/write/new" variant="primary" size="sm">
-          새로운 프로젝트
-        </LinkButton>}
+        <RoleGate allowedRoles={["ADMIN"]}>
+          <LinkButton href="/projects/write/new" variant="primary" size="sm">
+            새로운 프로젝트
+          </LinkButton>
+        </RoleGate>
       </div>
       {/* Grid Container */}
       <ProjectGrid projects={sortedProjects} />
     </div>
-  )
+  );
 }
