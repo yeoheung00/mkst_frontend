@@ -3,7 +3,6 @@ import Image from "next/image";
 import { Comment, CommentWithReplies } from "@/types";
 import { useState, Dispatch, SetStateAction } from "react";
 import CommentForm from "./CommentForm";
-import { Session } from "next-auth";
 import { Button } from "@/components/ui/Button";
 import { deleteComment } from "@/lib/api/blog";
 import { useAuth } from "@/context/AuthContext";

@@ -1,7 +1,6 @@
 'use client';
 import { Comment, CommentWithReplies, Like } from "@/types";
 import CommentItem from "./CommentItem";
-import { Session } from "next-auth";
 import { useState } from "react";
 import CommentForm from "./CommentForm";
 import { Comment as CommentIcon, Heart, HeartFill } from "@/components/icons";
