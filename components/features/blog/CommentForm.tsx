@@ -9,9 +9,9 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { createComment, editComment } from "@/lib/api/blog";
 import { Comment, CreateCommentInput, EditCommentInput } from "@/types";
 import { signIn } from "next-auth/react";
+import { useAuth } from "@/context/AuthContext";
 
 interface CommentFormProps {
-  session: Session | null;
   postId: number;
   parentId: number | null;
   onUpdateAction: Dispatch<SetStateAction<Comment[]>>;
@@ -21,7 +21,6 @@ interface CommentFormProps {
 }
 
 export default function CommentForm({
-  session,
   postId,
   parentId,
   onUpdateAction,
@@ -29,6 +28,7 @@ export default function CommentForm({
   originId = null,
   onClose,
 }: CommentFormProps) {
+  const { user } = useAuth();
   const [content, setContent] = useState(origin ?? "");
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;
@@ -44,23 +44,23 @@ export default function CommentForm({
       return;
     }
 
-    if (!session) {
-      alert("세션 오류");
+    if (!user) {
+      alert("로그인이 필요합니다.");
       return;
     }
 
     if (onClose) onClose();
 
     if (originId) {
-      await handleEditComment(session, originId);
+      await handleEditComment(originId);
     } else {
-      await handleCreateComment(session);
+      await handleCreateComment();
     }
   };
 
-  const handleCreateComment = async (session: Session) => {
-    if (!session.accessToken) {
-      alert("액세스 토큰 오류");
+  const handleCreateComment = async () => {
+    if (!user) {
+      alert("로그인이 필요합니다.");
       return;
     }
 
@@ -81,9 +81,9 @@ export default function CommentForm({
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       author: {
-        id: session.user.id ?? "",
-        name: session.user.name ?? "",
-        image: session.user.image ?? "",
+        id: user.id ?? "",
+        name: user.name ?? "",
+        image: user.image ?? "",
       },
     };
 
@@ -91,7 +91,7 @@ export default function CommentForm({
     onUpdateAction((prev) => [...prev, optimisticComment]);
     setContent("");
 
-    const res = await createComment(payload, session.accessToken);
+    const res = await createComment(payload);
 
     if (!res.success) {
       alert("댓글 작성 실패");
@@ -116,9 +116,9 @@ export default function CommentForm({
       ),
     );
   };
-  const handleEditComment = async (session: Session, originId: number) => {
-    if (!session.accessToken) {
-      alert("액세스 토큰 오류");
+  const handleEditComment = async (originId: number) => {
+    if (!user) {
+      alert("로그인이 필요합니다.");
       return;
     }
     const payload: EditCommentInput = {
@@ -134,7 +134,7 @@ export default function CommentForm({
           : comment,
       ),
     );
-    const res = await editComment(originId, payload, session.accessToken);
+    const res = await editComment(originId, payload);
     if (!res.success) {
       alert("댓글 수정 실패");
       onUpdateAction((prev) =>
@@ -151,7 +151,7 @@ export default function CommentForm({
   };
   return (
     <div>
-      {session ? (
+      {user ? (
         <div className="border border-border-default p-2 md:p-4 bg-surface-sub rounded-xl space-y-2 md:space-y-4">
           <Textarea
             size="lg"
@@ -163,9 +163,9 @@ export default function CommentForm({
           <div className="flex items-center gap-2">
             <div className="flex grow gap-2 items-center">
               <div className="w-8 h-8 border border-border-default bg-surface-subest rounded-full overflow-hidden">
-                {session.user.image ? (
+                {user.image ? (
                   <Image
-                    src={session.user.image}
+                    src={user.image}
                     width={32}
                     height={32}
                     alt=""
@@ -175,7 +175,7 @@ export default function CommentForm({
                   <User className="rounded-full" />
                 )}
               </div>
-              <span className="flex-1">{session.user.name}</span>
+              <span className="flex-1">{user.name}</span>
             </div>
             <span className="text-text-secondary text-sub">
               {content.length}/1000

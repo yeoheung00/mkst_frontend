@@ -6,16 +6,18 @@ import { useState } from "react";
 import CommentForm from "./CommentForm";
 import { Comment as CommentIcon, Heart, HeartFill } from "@/components/icons";
 import { toggleLike } from "@/lib/api/blog";
+import { useAuth } from "@/context/AuthContext";
 
-export default function CommentClient({ comments, session, postId, likes }: { comments: Comment[]; session: Session | null; postId: number; likes: Like[] }) {
+export default function CommentClient({ comments, postId, likes }: { comments: Comment[]; postId: number; likes: Like[] }) {
+  const { user } = useAuth();
   const [commentsList, setCommentsList] = useState(comments);
   const [likesList, setLikesList] = useState(likes.map((like) => like.userId));
   const commentTree = buildCommentTree(commentsList);
   const handleToggleLike = async() => {
-    if (!session || !session.user.id || !session.accessToken) return;
-    const toggleLikeState = likesList.includes(session.user.id) ? likesList.filter(id => id !== session.user.id) : [...likesList, session.user.id];
+    if (!user) return;
+    const toggleLikeState = likesList.includes(user.id) ? likesList.filter(id => id !== user.id) : [...likesList, user.id];
     setLikesList(toggleLikeState);
-    const likeRes = await toggleLike(postId, session.accessToken);
+    const likeRes = await toggleLike(postId);
     if (!likeRes.success) setLikesList(toggleLikeState);
   };
   return (
@@ -23,7 +25,7 @@ export default function CommentClient({ comments, session, postId, likes }: { co
       <div className="flex gap-4 items-center">
         <div className="flex gap-1 items-center" onClick={handleToggleLike}>
           {
-            session && session.user.id && likesList.includes(session.user.id) ? <HeartFill className="text-red-400" /> : <Heart />
+            user && likesList.includes(user.id) ? <HeartFill className="text-red-400" /> : <Heart />
           }
           <span>좋아요 {likesList.length}개</span>
         </div>
@@ -34,10 +36,10 @@ export default function CommentClient({ comments, session, postId, likes }: { co
       </div>
       <div className="w-full space-y-4 py-4">
         {commentTree.length > 0 ? commentTree.map((comment) => (
-          <CommentItem key={comment.id} session={session} postId={postId} comment={comment} onUpdateAction={setCommentsList} />
+          <CommentItem key={comment.id} postId={postId} comment={comment} onUpdateAction={setCommentsList} />
         )) : <div className="text-text-secondary text-base text-center">댓글이 없습니다.</div>}
       </div>
-      <CommentForm session={session} postId={postId} parentId={null} onUpdateAction={setCommentsList} />
+      <CommentForm postId={postId} parentId={null} onUpdateAction={setCommentsList} />
     </div>
   );
 }

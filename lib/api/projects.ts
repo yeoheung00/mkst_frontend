@@ -1,9 +1,10 @@
-import { ApiResponse, Project, CreateProjectInput, Post, ProjectSummary, ResCreatePost, Comment, CreateCommentInput, EditCommentInput } from '@/types';
+import { ApiResponse, Project, CreateProjectInput, ProjectSummary, ResCreatePost } from '@/types';
+import { fetchClient } from './client';
 
 
 export const getProjects = async (): Promise<ApiResponse<ProjectSummary[]>> => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects`);
+    const res = await fetchClient(`/api/projects`, {skipAuth: true});
     if (!res.ok) return { success: false, error: `HTTP error! status: ${res.status}` };
     const data: ProjectSummary[] = await res.json();
     return { success: true, data };
@@ -15,7 +16,7 @@ export const getProjects = async (): Promise<ApiResponse<ProjectSummary[]>> => {
 
 export const getProject = async (projectSlug: string): Promise<ApiResponse<Project>> => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectSlug}`);
+    const res = await fetchClient(`/api/projects/${projectSlug}`, {skipAuth: true});
     if (!res.ok) return { success: false, error: `HTTP error! status: ${res.status}` };
     const data: Project = await res.json();
     return { success: true, data };
@@ -25,12 +26,11 @@ export const getProject = async (projectSlug: string): Promise<ApiResponse<Proje
   }
 }
 
-export const createProject = async (project: CreateProjectInput, token: string): Promise<ApiResponse<ResCreatePost>> => {
+export const createProject = async (project: CreateProjectInput): Promise<ApiResponse<ResCreatePost>> => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects`, {
+    const res = await fetchClient(`/api/projects`, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(project),
@@ -44,13 +44,12 @@ export const createProject = async (project: CreateProjectInput, token: string):
   }
 };
 
-export const editProject = async (projectId: number, project: CreateProjectInput, token: string): Promise<ApiResponse<ResCreatePost>> => {
+export const editProject = async (projectId: number, project: CreateProjectInput): Promise<ApiResponse<ResCreatePost>> => {
   try {
     console.log(projectId);
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}`, {
+    const res = await fetchClient(`/api/projects/${projectId}`, {
       method: "PATCH",
       headers: {
-        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(project),
@@ -64,13 +63,10 @@ export const editProject = async (projectId: number, project: CreateProjectInput
   }
 };
 
-export const deleteProject = async (projectId: number, token: string): Promise<ApiResponse<{goto: string}>> => {
+export const deleteProject = async (projectId: number): Promise<ApiResponse<{goto: string}>> => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}`, {
+    const res = await fetchClient(`/api/projects/${projectId}`, {
       method: "DELETE",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
     });
     if (!res.ok) return { success: false, error: `HTTP error! status: ${res.status}` };
     const data = await res.json();
@@ -81,14 +77,10 @@ export const deleteProject = async (projectId: number, token: string): Promise<A
   }
 };
 
-export const syncProject = async (projectId: number, token: string): Promise<ApiResponse<{goto: string}>> => {
+export const syncProject = async (projectId: number): Promise<ApiResponse<{goto: string}>> => {
   try {
-    console.log("syncProject", `${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/sync`);
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/sync`, {
+    const res = await fetchClient(`/api/projects/${projectId}/sync`, {
       method: "PATCH",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
     });
     if (!res.ok) return { success: false, error: `HTTP error! status: ${res.status}` };
     const data = await res.json();

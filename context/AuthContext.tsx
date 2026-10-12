@@ -1,87 +1,102 @@
 // context/AuthContext.tsx
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, useTransition } from 'react';
-import { setAccessToken } from '@/lib/util/auth';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { getAccessToken, setAccessToken } from '@/lib/util/auth';
 import { fetchClient } from '@/lib/api/client';
+import { requestTokenRefresh } from '@/lib/api/auth';
 
 export interface User {
   id: string;
   role: string;
   name?: string;
   email?: string;
-  avatarUrl?: string;
+  image?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
+  setUser: (user: User | null) => void;
+  fetchMe: () => Promise<void>;
   logout: () => Promise<void>;
-  refreshAuth: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   isLoading: true,
+  setUser: () => {},
+  fetchMe: async () => {},
   logout: async () => {},
-  refreshAuth: async () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 1. 세션 복구 및 내 정보 갱신 함수
-  const refreshAuth = async () => {
+  // 2. fetchMe에서 직접 updateUser 호출
+  const fetchMe = useCallback(async () => {
     try {
-      // 1-1. 백엔드 /api/auth/refresh 호출로 새 Access Token 발급
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/auth/refresh`,
-        {
-          method: 'POST',
-          credentials: 'include',
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error('인증 세션 없음');
-      }
-
-      const { accessToken } = await res.json();
-      setAccessToken(accessToken);
-
-      // 1-2. 방금 발급받은 토큰으로 내 정보(User Profile) 조회
-      const userRes = await fetchClient('/user/me');
-      if (userRes.ok) {
-        const userData = await userRes.json();
+      const res = await fetchClient('/api/user/me');
+      if (res.ok) {
+        const userData = await res.json();
+        // 여기서 바로 상태와 세션스토리지에 저장!
         setUser(userData);
+        return userData;
+      } else {
+        setUser(null);
+        return null;
       }
     } catch {
-      // 비로그인 상태이거나 리프레시 만료 시
+      setUser(null);
+      return null;
+    }
+  }, []);
+
+  // F5 새로고침 시 세션 복구: 메모리에 토큰이 없을 때만 /refresh 수행
+  const initAuth = useCallback(async () => {
+    try {
+      // 1. 이미 메모리에 토큰이 있다면 리프레시 건너뛰고 fetchMe만 수행
+      if (getAccessToken()) {
+        await fetchMe();
+        return;
+      }
+
+      // 2. 메모리가 비어있을 때(새로고침)만 /refresh 요청
+      const accessToken = await requestTokenRefresh();
+
+      // 3. 액세스 토큰 발급 실패시 비로그인 처리
+      if (!accessToken) {
+        setAccessToken(null);
+        setUser(null);
+        return;
+      }
+
+      setAccessToken(accessToken);
+
+      // 4. 발급받은 새 토큰으로 유저 정보 로드
+      await fetchMe();
+    } catch {
       setAccessToken(null);
       setUser(null);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [fetchMe]);
 
-  // 2. 앱 마운트 시 (새로고침 시) 1회 자동 실행
   useEffect(() => {
-    refreshAuth();
-  }, []);
+    initAuth();
+  }, [initAuth]);
 
-  // 3. 로그아웃 핸들러
   const logout = async () => {
     try {
       await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/auth/logout`,
+        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/auth/logout`,
         {
           method: 'POST',
           credentials: 'include',
         }
       );
-    } catch (err) {
-      console.error('로그아웃 요청 실패:', err);
     } finally {
       setAccessToken(null);
       setUser(null);
@@ -90,7 +105,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, logout, refreshAuth }}>
+    <AuthContext.Provider value={{ user, isLoading, setUser, fetchMe, logout }}>
       {children}
     </AuthContext.Provider>
   );

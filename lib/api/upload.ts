@@ -1,13 +1,11 @@
 import { ApiResponse, UploadedImage } from "@/types";
+import { fetchClient } from "./client";
 
-export const uploadImageFile = async (file: File, token: string): Promise<ApiResponse<UploadedImage>> => {
+export const uploadImageFile = async (file: File): Promise<ApiResponse<UploadedImage>> => {
   const formData = new FormData();
   formData.append("file", file);
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload/image`, {
+  const res = await fetchClient(`${process.env.NEXT_PUBLIC_API_URL}/api/upload/image`, {
     method: "POST",
-    headers: {
-      "Authorization": `Bearer ${token}`,
-    },
     body: formData,
   });
   if (!res.ok) return { success: false, error: "Failed to upload file" };

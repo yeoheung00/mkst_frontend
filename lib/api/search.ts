@@ -1,7 +1,7 @@
 import { ApiResponse, SearchResult } from "@/types";
 
 export const search = async (searchTerm: string): Promise<ApiResponse<SearchResult[]>> => {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/search/${encodeURIComponent(searchTerm)}`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/search/${encodeURIComponent(searchTerm)}`;
   console.log("search url", url);
   const res = await fetch(url);
   if(!res.ok) {

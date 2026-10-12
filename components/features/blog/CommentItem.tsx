@@ -6,22 +6,22 @@ import CommentForm from "./CommentForm";
 import { Session } from "next-auth";
 import { Button } from "@/components/ui/Button";
 import { deleteComment } from "@/lib/api/blog";
+import { useAuth } from "@/context/AuthContext";
 
 export default function CommentItem({
-  session,
   comment,
   postId,
   onUpdateAction,
 }: {
-  session: Session | null;
   comment: CommentWithReplies;
   postId: number;
   onUpdateAction: Dispatch<SetStateAction<Comment[]>>;
-}) {
+  }) {
+  const { user } = useAuth();
   const [reply, setReply] = useState(false);
   const [editing, setEditing] = useState(false);
   const handleDelete = async () => {
-    if(!session || !session.accessToken) return;
+    if(!user) return;
     if (confirm("댓글을 삭제하시겠습니까?")) {
       const hasChildren = comment.replies && comment.replies.length > 0;
       if (!hasChildren) {
@@ -29,7 +29,7 @@ export default function CommentItem({
       } else {
         onUpdateAction(prev => prev.map(c => c.id === comment.id ? { ...c, deletedAt: new Date().toISOString() } : c));
       }
-      const res = await deleteComment(comment.id, session.accessToken);
+      const res = await deleteComment(comment.id);
       if (!res.success) {
         alert("댓글 삭제에 실패했습니다.");
         if (!hasChildren) onUpdateAction(prev => [...prev, comment]);
@@ -58,14 +58,14 @@ export default function CommentItem({
 
           {/* Comment Content */}
           {!editing && <p>{comment.content}</p>}
-          {editing && <CommentForm session={session} postId={postId} parentId={comment.id} onUpdateAction={onUpdateAction} origin={comment.content} originId={comment.id} onClose={() => setEditing(false)} />}
+          {editing && <CommentForm postId={postId} parentId={comment.id} onUpdateAction={onUpdateAction} origin={comment.content} originId={comment.id} onClose={() => setEditing(false)} />}
 
           {/* Comment Actions */}
           <div className="flex gap-2">
             <Button variant="border" size="sm" disabled={comment.status === "pending"} onClick={() => { setReply(!reply); setEditing(false) }}>
               {reply ? "답글 취소" : "답글 달기"}
             </Button>
-            {session && session.user.id === comment.author.id && (
+            {user && user.id === comment.author.id && (
               <>
                 <Button variant="border" size="sm" onClick={() => { setEditing(!editing); setReply(false); }}>
                   {editing ? "수정 취소" : "수정"}
@@ -81,7 +81,6 @@ export default function CommentItem({
           {reply && (
             <div>
               <CommentForm
-                session={session}
                 postId={postId}
                 parentId={comment.id}
                 onUpdateAction={onUpdateAction}
@@ -97,7 +96,6 @@ export default function CommentItem({
           {comment.replies.map((reply) => (
             <CommentItem
               key={reply.id}
-              session={session}
               comment={reply}
               postId={postId}
               onUpdateAction={onUpdateAction}

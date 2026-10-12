@@ -1,7 +1,7 @@
 export const handleKakaoLogin = () => {
   const clientId = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID;
   const redirectUri = encodeURIComponent(
-    process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI || 'http://localhost:4000/api/auth/kakao/callback'
+    process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI!
   );
 
   if (!clientId) {

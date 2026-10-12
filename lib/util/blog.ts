@@ -1,4 +1,3 @@
-
 function extractPlainText(node: unknown): string {
   if (!node) return '';
 

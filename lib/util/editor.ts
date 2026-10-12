@@ -1,4 +1,3 @@
-import { Session } from "next-auth";
 import { uploadImageFile } from "../api/upload";
 import { AnyExtension, CommandProps, Editor } from "@tiptap/core";
 import { EditorView } from "@tiptap/pm/view";
@@ -48,18 +47,13 @@ export const CustomHeading = Heading.extend({
 /* 4. 이미지 업로드 유틸                                                     */
 /* -------------------------------------------------------------------------- */
 export const uploadAndInsertImage = async (
-  session: Session | null,
   editor: Editor | null,
   file: File,
   view?: EditorView,
   event?: globalThis.DragEvent
 ): Promise<ApiResponse<UploadedImage>> => {
-  if (!session?.accessToken) {
-    alert("로그인이 필요합니다.");
-    return { success: false, error: "로그인 필요" };
-  }
 
-  const imageRes = await uploadImageFile(file, session.accessToken);
+  const imageRes = await uploadImageFile(file);
   if (!imageRes.success || !imageRes.data) {
     alert("이미지 업로드에 실패했습니다.");
     return { success: false, error: "업로드 실패" };

@@ -23,8 +23,8 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  //const res = await getAllCategories();
-  //if (!res.success) return <div>Fail to get all categories (layout.tsx)</div>
+  const res = await getAllCategories();
+  if (!res.success) return <div>Fail to get all categories (layout.tsx)</div>
   return (
     <html
       suppressHydrationWarning
@@ -36,7 +36,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           <Header/>
           <div className="w-full min-h-full grow flex flex-row">
             <Sidebar initialCategories={[]} />
-            <main className="grow overflow-hidden min-h-full flex flex-col items-center justify-between">
+            <main className="grow min-h-full flex flex-col items-center justify-between">
               {children}
               <Footer/>
             </main>

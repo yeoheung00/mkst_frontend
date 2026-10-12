@@ -6,20 +6,19 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { JSONContent } from "@tiptap/react";
 import { useRouter } from "next/navigation";
-import { Session } from "next-auth";
 import { CreatePostInput, Post, PostImage, Category } from "@/types";
 import { createPost, editPost } from "@/lib/api/blog";
 import { getPostSummary } from "@/lib/util";
+import { useAuth } from "@/context/AuthContext";
 
 export default function PostClient({
   categories,
-  session,
   post,
 }: {
   categories: Category[];
-  session: Session | null;
   post: Post | null;
 }) {
+  const { user } = useAuth();
   const [title, setTitle] = useState(post ? post.title : "");
   const [categoryName, setCategoryName] = useState(
     post ? post.category.name : "",
@@ -67,7 +66,7 @@ export default function PostClient({
     const filteredImages: PostImage[] = Array.from(imageSrcs)
       .map((url) => {
         const img = contentIMAGES.find(
-          (img) => `${process.env.NEXT_PUBLIC_SERVER_URL}${img.url}` === url,
+          (img) => `${process.env.NEXT_PUBLIC_API_URL}${img.url}` === url,
         );
         return { ...img, displayOrder: count++ } as PostImage;
       })
@@ -81,20 +80,20 @@ export default function PostClient({
       images: filteredImages,
     };
 
-    if (!session || !session.accessToken) {
-      alert("엑세스 토큰이 필요합니다.");
+    if (!user) {
+      alert("로그인이 필요합니다.");
       return;
     }
 
     if (post) {
-      const res = await editPost(post.id, payload, session.accessToken);
+      const res = await editPost(post.id, payload);
       if (!res.success) {
         alert(res.error);
         return;
       }
       router.push(`/blog/${res.data.category.slug}/${res.data.slug}`);
     } else {
-      const res = await createPost(payload, session.accessToken);
+      const res = await createPost(payload);
       if (!res.success) {
         alert(res.error);
         return;
@@ -141,7 +140,7 @@ export default function PostClient({
         <label htmlFor="editor" className="text-xl font-bold">
           본문
         </label>
-        <PostEditor ref={editorRef} post={post} session={session} />
+        <PostEditor ref={editorRef} post={post} />
       </div>
     </div>
   );

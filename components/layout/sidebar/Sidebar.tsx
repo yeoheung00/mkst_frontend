@@ -71,7 +71,7 @@ function UserLink() {
         <div className="w-8 h-8 shrink-0 border border-border-default bg-surface-subest rounded-full overflow-hidden flex items-center justify-center">
           {user ? (
             <Image
-              src={user.avatarUrl ?? ""}
+              src={user.image ?? ""}
               width={32}
               height={32}
               sizes="32px"
@@ -149,7 +149,7 @@ function BlogLinks({ initialCategories }: { initialCategories: Category[] }) {
   const isActive = path.startsWith("/blog");
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/blog/categories`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/blog/categories`,
     fetcher,
     {
       fallbackData: initialCategories,

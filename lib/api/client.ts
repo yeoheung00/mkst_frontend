@@ -1,87 +1,45 @@
+import { getAccessToken, setAccessToken } from "../util/auth";
+import { requestTokenRefresh } from "./auth";
+
 // lib/api/client.ts
-import { getAccessToken, setAccessToken } from '@/lib/util/auth';
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
-
-let isRefreshing = false;
-let refreshSubscribers: ((token: string) => void)[] = [];
-
-// 토큰 갱신 대기 중인 요청들에게 새 토큰 전달
-const onRefreshed = (token: string) => {
-  refreshSubscribers.forEach((callback) => callback(token));
-  refreshSubscribers = [];
-};
-
-// 토큰 갱신 대기 큐에 등록
-const addRefreshSubscriber = (callback: (token: string) => void) => {
-  refreshSubscribers.push(callback);
-};
+interface FetchClientOptions extends RequestInit {
+  skipAuth?: boolean; // 인증 헤더(Bearer 토큰) 생략 옵션
+}
 
 export const fetchClient = async (
   endpoint: string,
-  options: RequestInit = {}
-): Promise<Response> => {
-  const url = `${BASE_URL}${endpoint}`;
-  const token = getAccessToken();
+  options: FetchClientOptions = {}
+) => {
+  const { skipAuth = false, headers, ...rest } = options;
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  const url = endpoint.startsWith('http') ? endpoint : `${baseUrl}${endpoint}`;
 
-  // 헤더 설정 (Access Token 첨부)
-  const headers = new Headers(options.headers || {});
-  if (token) {
-    headers.set('Authorization', `Bearer ${token}`);
-  }
-  if (!headers.has('Content-Type') && !(options.body instanceof FormData)) {
-    headers.set('Content-Type', 'application/json');
-  }
+  const requestHeaders = new Headers(headers);
 
-  // credentials: 'include' -> HttpOnly 쿠키(refreshToken) 자동 동봉
-  const config: RequestInit = {
-    ...options,
-    headers,
-    credentials: 'include',
-  };
-
-  let response = await fetch(url, config);
-
-  // 401(토큰 만료) 감지 시 무중단 자동 갱신 (Silent Refresh)
-  if (response.status === 401 && !endpoint.includes('/api/auth/refresh')) {
-    if (isRefreshing) {
-      // 이미 다른 요청이 갱신 중이라면 대기 후 새 토큰으로 재시도
-      return new Promise<Response>((resolve) => {
-        addRefreshSubscriber(async (newToken: string) => {
-          headers.set('Authorization', `Bearer ${newToken}`);
-          resolve(fetch(url, { ...config, headers }));
-        });
-      });
-    }
-
-    isRefreshing = true;
-
-    try {
-      // 백엔드에 쿠키(refreshToken)를 실어 새 Access Token 요청
-      const refreshRes = await fetch(`${BASE_URL}/api/auth/refresh`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-
-      if (!refreshRes.ok) {
-        throw new Error('리프레시 세션 만료');
-      }
-
-      const { accessToken: newAccessToken } = await refreshRes.json();
-      setAccessToken(newAccessToken);
-      onRefreshed(newAccessToken);
-
-      // 원래 실패했던 요청에 새 Access Token을 꽂고 재실행
-      headers.set('Authorization', `Bearer ${newAccessToken}`);
-      return await fetch(url, { ...config, headers });
-    } catch (refreshError) {
-      // 리프레시 토큰까지 만료되었으면 메모리 정리
-      setAccessToken(null);
-      return Promise.reject(refreshError);
-    } finally {
-      isRefreshing = false;
+  // 인증이 필요한 경우에만 메모리에서 토큰을 꺼내 헤더에 주입
+  if (!skipAuth) {
+    const token = getAccessToken();
+    if (token) {
+      requestHeaders.set('Authorization', `Bearer ${token}`);
     }
   }
 
-  return response;
+  // 기본 Content-Type 설정 (Body가 있을 때)
+  if (rest.body && !requestHeaders.has('Content-Type')) {
+    requestHeaders.set('Content-Type', 'application/json');
+  }
+
+  let res = await fetch(url, { ...rest, headers: requestHeaders });
+
+  // 인증 요청인데 401이 떴을 때만 Silent Refresh 인터셉트 수행
+  if (!skipAuth && res.status === 401) {
+    const newToken = await requestTokenRefresh();
+    if (newToken) {
+      setAccessToken(newToken);
+      requestHeaders.set('Authorization', `Bearer ${newToken}`);
+      res = await fetch(url, { ...rest, headers: requestHeaders });
+    }
+  }
+
+  return res;
 };
