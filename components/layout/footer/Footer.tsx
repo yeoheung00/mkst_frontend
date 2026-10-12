@@ -5,7 +5,7 @@ import ThemeSelector from "./ThemeSelector";
 export default function Footer() {
   return (
     <footer className="w-full border-t border-border-default mt-32">
-      <div className="mx-auto flex max-w-4xl flex-col gap-8 px-4 py-10">
+      <div className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-10">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-1">
             <div className="flex flex-col sm:flex-row sm:gap-2 items-center sm:items-baseline">

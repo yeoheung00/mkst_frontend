@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Search from "./Search";
 import SearchModal from "./SearchModal";
-import { useSidebar } from "@/context/SidebarProvider";
+import { useSidebar } from "@/context/SidebarContext";
 import { useState, useEffect, useRef } from "react";
 
 export default function Header() {

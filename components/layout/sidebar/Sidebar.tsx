@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/Button";
-import { useSidebar } from "@/context/SidebarProvider";
+import { useSidebar } from "@/context/SidebarContext";
 import { Category } from "@/types/blog";
 import Image from "next/image";
 import Link from "next/link";

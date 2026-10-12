@@ -1,5 +1,4 @@
 "use client";
-import { Session } from "@auth/core/types";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { Send } from "@/components/icons";
@@ -8,8 +7,8 @@ import Image from "next/image";
 import { Dispatch, SetStateAction, useState } from "react";
 import { createComment, editComment } from "@/lib/api/blog";
 import { Comment, CreateCommentInput, EditCommentInput } from "@/types";
-import { signIn } from "next-auth/react";
 import { useAuth } from "@/context/AuthContext";
+import { handleKakaoLogin } from "@/lib/util/auth";
 
 interface CommentFormProps {
   postId: number;
@@ -192,7 +191,7 @@ export default function CommentForm({
         </div>
       ) : (
         <div className="text-center border border-border-default p-4 bg-surface-sub rounded-xl space-y-4">
-          <p>로그인 후 댓글을 작성할 수 있습니다.</p> <Button variant="primary" size="sm" onClick={()=>signIn("kakao")}>카카오로 로그인</Button>
+          <p>로그인 후 댓글을 작성할 수 있습니다.</p> <Button variant="primary" size="sm" onClick={handleKakaoLogin}>카카오로 로그인</Button>
         </div>
       )}
     </div>
