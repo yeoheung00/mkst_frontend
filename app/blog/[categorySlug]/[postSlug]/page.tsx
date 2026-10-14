@@ -72,16 +72,16 @@ export default async function BlogCategoryPost({ params }: Props) {
 function Toc({ toc }: { toc: TocItem[] }) {
   return (
     <div className="w-full sticky top-20 space-y-2">
-      <div className="hidden lg:flex p-4 flex-col bg-surface-sub rounded-xl border border-border-default">
-        <span className="text-lg font-semibold mb-2">On this Page</span>
+      <div className="hidden lg:flex p-4 flex-col bg-surface-sub rounded-md border border-border-default">
+        <span className="text-base font-semibold mb-2">On this Page</span>
         {toc.map((item, index) => (
           <Link
             key={index}
-            className={
+            className={`text-sub ${
               item.level === 3
-                ? "pl-4 text-text-secondary font-normal"
-                : "font-medium"
-            }
+                ? "pl-2 text-text-secondary font-normal"
+                : `font-medium ${index!==0 && "mt-2"}`
+            }`}
             href={`#${item.id}`}
           >
             {item.text}

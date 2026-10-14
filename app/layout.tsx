@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Provider from "@/context/Provider";
 import Header from "@/components/layout/header/Header";
@@ -55,7 +54,7 @@ export const metadata: Metadata = {
     telephone: false,
   },
   alternates: {
-    canonical: '/', 
+    canonical: '/',
   },
   openGraph: {
     type: 'website',
@@ -112,8 +111,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <Provider>
           <Header/>
           <div className="w-full min-h-full grow flex flex-row">
-            <Sidebar initialCategories={[]} />
-            <main className="grow min-h-full flex flex-col items-center justify-between">
+            <Sidebar initialCategories={res.data} />
+            <main className="grow w-full min-h-full flex flex-col items-center justify-between">
               {children}
               <Footer/>
             </main>

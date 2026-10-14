@@ -17,7 +17,6 @@ import {
 } from "react";
 import { Post, UploadedImage } from "@/types";
 import { getEditorExtensions, uploadAndInsertImage } from "@/lib/util/editor";
-import { uploadImageFile } from "@/lib/api/upload";
 
 export interface PostEditorRef {
   getJSON: () => JSONContent;

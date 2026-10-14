@@ -14,7 +14,7 @@ export default function PostViewer({ content }: PostViewerProps) {
   }
 
   return (
-    <article className="doc-viewer max-w-none pb-8 border-b border-border-default">
+    <article className="doc-viewer max-w-none w-full pb-8 border-b border-border-default">
       <RenderNodes nodes={content.content} />
     </article>
   );
