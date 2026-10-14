@@ -4,7 +4,7 @@ import { fetchClient } from "./client";
 export const uploadImageFile = async (file: File): Promise<ApiResponse<UploadedImage>> => {
   const formData = new FormData();
   formData.append("file", file);
-  const res = await fetchClient(`${process.env.NEXT_PUBLIC_API_URL}/api/upload/image`, {
+  const res = await fetchClient(`/api/upload/image`, {
     method: "POST",
     body: formData,
   });

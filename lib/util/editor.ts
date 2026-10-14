@@ -74,7 +74,7 @@ export const uploadAndInsertImage = async (
 
     chain
       .setImage({
-        src: `${process.env.NEXT_PUBLIC_SERVER_URL || ""}${imageData.url}`,
+        src: `${process.env.NEXT_PUBLIC_API_URL || ""}${imageData.url}`,
         alt: file.name,
         width: imageData.width ?? undefined,
         height: imageData.height ?? undefined,

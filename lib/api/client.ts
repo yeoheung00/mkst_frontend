@@ -24,9 +24,10 @@ export const fetchClient = async (
     }
   }
 
-  // 기본 Content-Type 설정 (Body가 있을 때)
   if (rest.body && !requestHeaders.has('Content-Type')) {
-    requestHeaders.set('Content-Type', 'application/json');
+    if (!(rest.body instanceof FormData)) {
+      requestHeaders.set('Content-Type', 'application/json');
+    }
   }
 
   let res = await fetch(url, { ...rest, headers: requestHeaders });
